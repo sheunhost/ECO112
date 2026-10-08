@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECO 112 — CBT Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B140F;
+    --ink-2:#241A12;
+    --sand:#F1E4C8;
+    --sand-dim:#B9A883;
+    --indigo:#2E3F6E;
+    --indigo-2:#3E5288;
+    --gold:#C9963E;
+    --gold-2:#E0B15C;
+    --rust:#9C4632;
+    --green:#4C7A52;
+    --line: rgba(241,228,200,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(46,63,110,0.35), transparent 55%),
+      radial-gradient(ellipse at 100% 110%, rgba(201,150,62,0.12), transparent 50%),
+      var(--ink);
+    color:var(--sand);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  .brand{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:22px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .brand-mark{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold-2);
+  }
+  .brand-code{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--sand-dim);
+    letter-spacing:0.08em;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(28px, 6vw, 40px);
+    line-height:1.08;
+    margin:6px 0 8px;
+    color:var(--sand);
+  }
+  .subtitle{
+    color:var(--sand-dim);
+    font-size:15px;
+    line-height:1.5;
+    margin:0 0 28px;
+    max-width:52ch;
+  }
+  .card{
+    background:linear-gradient(180deg, var(--ink-2), rgba(36,26,18,0.6));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:24px;
+  }
+  .field{margin-bottom:22px;}
+  .field:last-child{margin-bottom:0;}
+  .field-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold-2);
+    display:block;
+    margin-bottom:10px;
+  }
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{
+    background:transparent;
+    border:1px solid rgba(241,228,200,0.28);
+    color:var(--sand);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip:hover{border-color:var(--gold);}
+  .chip.active{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:var(--ink);
+    font-weight:600;
+  }
+  .custom-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  .custom-row input[type=number]{
+    width:80px;
+    background:rgba(241,228,200,0.06);
+    border:1px solid rgba(241,228,200,0.28);
+    color:var(--sand);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    padding:8px 10px;
+    border-radius:8px;
+  }
+  .custom-row span{color:var(--sand-dim); font-size:13px;}
+  .hint{color:var(--sand-dim); font-size:12.5px; margin-top:8px;}
+  .cta{
+    width:100%;
+    margin-top:26px;
+    background:var(--gold);
+    color:var(--ink);
+    border:none;
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:17px;
+    padding:15px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .cta:hover{transform:translateY(-1px); box-shadow:0 8px 22px rgba(201,150,62,0.25);}
+  .cta:disabled{opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none;}
+  .cta.secondary{
+    background:transparent;
+    border:1px solid rgba(241,228,200,0.3);
+    color:var(--sand);
+  }
+
+  /* ---- Caravan route (signature element) ---- */
+  .route{
+    position:relative;
+    margin:6px 0 30px;
+    padding:0 6px;
+  }
+  .route-line{
+    position:relative;
+    height:2px;
+    background:rgba(241,228,200,0.16);
+    border-radius:2px;
+  }
+  .route-fill{
+    position:absolute; left:0; top:0; height:100%;
+    background:linear-gradient(90deg, var(--indigo-2), var(--gold));
+    border-radius:2px;
+    transition:width .4s ease;
+  }
+  .route-stages{
+    display:flex; justify-content:space-between;
+    margin-top:8px;
+  }
+  .stage{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--sand-dim);
+    text-align:center;
+    flex:1;
+  }
+  .stage.done{color:var(--gold-2);}
+  .camel{
+    position:absolute;
+    top:-16px;
+    transform:translateX(-50%);
+    font-size:18px;
+    transition:left .4s ease;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+  }
+
+  /* ---- Quiz screen ---- */
+  .top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .q-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--sand-dim);
+  }
+  .timer{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    font-weight:600;
+    padding:6px 12px;
+    border-radius:8px;
+    border:1px solid rgba(241,228,200,0.25);
+    color:var(--sand);
+    letter-spacing:0.03em;
+  }
+  .timer.low{ color:var(--rust); border-color:var(--rust); animation:pulse 1s infinite; }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.55;}}
+
+  .question{
+    font-family:'Fraunces', serif;
+    font-size:clamp(19px, 4.4vw, 23px);
+    line-height:1.35;
+    font-weight:600;
+    margin:18px 0 22px;
+  }
+  .topic-tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--indigo-2);
+    background:rgba(62,82,136,0.18);
+    border:1px solid rgba(62,82,136,0.4);
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:12px;
+  }
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    text-align:left;
+    background:rgba(241,228,200,0.04);
+    border:1px solid rgba(241,228,200,0.16);
+    color:var(--sand);
+    padding:14px 16px;
+    border-radius:10px;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    line-height:1.4;
+    cursor:pointer;
+    transition:all .12s ease;
+  }
+  .option:hover{border-color:var(--gold); background:rgba(201,150,62,0.08);}
+  .option .letter{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--gold-2);
+    border:1px solid rgba(201,150,62,0.4);
+    width:22px; height:22px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:6px;
+    flex-shrink:0;
+    margin-top:1px;
+  }
+  .option.selected{border-color:var(--gold); background:rgba(201,150,62,0.14);}
+  .option.correct{border-color:var(--green); background:rgba(76,122,82,0.2);}
+  .option.correct .letter{color:var(--green); border-color:var(--green);}
+  .option.wrong{border-color:var(--rust); background:rgba(156,70,50,0.2);}
+  .option.wrong .letter{color:var(--rust); border-color:var(--rust);}
+  .option.disabled{cursor:default;}
+
+  .nav-row{display:flex; gap:10px; margin-top:24px;}
+  .nav-row .cta{margin-top:0;}
+
+  /* ---- Result screen ---- */
+  .score-hero{text-align:center; padding:10px 0 8px;}
+  .score-big{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:64px;
+    line-height:1;
+    margin:6px 0;
+  }
+  .score-big.pass{color:var(--gold-2);}
+  .score-big.fail{color:var(--rust);}
+  .score-sub{font-family:'IBM Plex Mono', monospace; color:var(--sand-dim); font-size:13px;}
+  .verdict{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-size:12px;
+    margin-top:6px;
+  }
+  .verdict.pass{color:var(--green);}
+  .verdict.fail{color:var(--rust);}
+
+  .stat-row{display:flex; gap:10px; margin:24px 0;}
+  .stat{
+    flex:1;
+    background:rgba(241,228,200,0.04);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+    text-align:center;
+  }
+  .stat .num{font-family:'IBM Plex Mono', monospace; font-size:20px; font-weight:600;}
+  .stat .lbl{font-size:10.5px; color:var(--sand-dim); text-transform:uppercase; letter-spacing:0.08em; margin-top:4px;}
+
+  .review-item{
+    border-top:1px solid var(--line);
+    padding:16px 0;
+  }
+  .review-q{font-size:14.5px; margin-bottom:8px; line-height:1.4;}
+  .review-ans{font-family:'IBM Plex Mono', monospace; font-size:12.5px; line-height:1.6;}
+  .review-ans .yours{color:var(--rust);}
+  .review-ans .correct-line{color:var(--green);}
+  .review-why{
+    font-family:'Inter', sans-serif;
+    font-size:13px;
+    line-height:1.55;
+    color:var(--sand-dim);
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed rgba(241,228,200,0.14);
+  }
+
+  .section-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--gold-2);
+    margin:30px 0 4px;
+  }
+
+  .hidden{display:none;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important;}
+  }
+</style>
+<style id="forest-theme">
+:root{--ink:#14301f;--ink-2:#fff;--sand:#14301f;--sand-dim:#5b6f63;--gold:#1f8a4c;--gold-2:#2fa862;--green:#1f8a4c;--rust:#c0392b;--indigo:#1f8a4c;--indigo-2:#2fa862;--line:rgba(20,48,31,.14)}
+html,body{background:#f3f8f4 !important;background-image:none !important;color:#14301f !important}
+.brand-mark,.brand-code,.section-label{color:#1f8a4c !important}
+h1,.question,.review-q,.score-sub{color:#14301f !important}
+.subtitle,.q-count,.lbl,.review-why,.field-label,.pal-l,.chip-row+span,label{color:#4d6256 !important}
+.card,.stat,.review-item,.score-hero{background:#fff !important;border:1px solid #d5e5d9 !important;box-shadow:0 2px 10px rgba(20,48,31,.05) !important;color:#14301f !important}
+.chip{background:#fff !important;border:1px solid #bcd3c3 !important;color:#14301f !important}
+.chip.active{background:#1f8a4c !important;color:#fff !important;border-color:#1f8a4c !important}
+input{background:#fff !important;color:#14301f !important;border:1px solid #bcd3c3 !important}
+.cta{background:#1f8a4c !important;color:#fff !important;border:0 !important}
+.cta:disabled{background:#cfdcd3 !important;color:#7a8d80 !important}
+.cta.secondary{background:#fff !important;color:#1f8a4c !important;border:1.5px solid #1f8a4c !important}
+.timer{background:#fff !important;color:#14301f !important;border:1px solid #bcd3c3 !important}
+.timer.low{color:#c0392b !important;border-color:#c0392b !important}
+.topic-tag{background:#e3f2e8 !important;color:#176b3b !important;border:1px solid #bcd3c3 !important}
+.option{background:#fff !important;border:1.5px solid #cfe0d4 !important;color:#14301f !important}
+.option:hover{border-color:#1f8a4c !important;background:#f0f8f2 !important}
+.option .letter{border-color:#bcd3c3 !important;color:#1f8a4c !important;background:transparent !important}
+.option.selected{border-color:#1f8a4c !important;background:#e3f2e8 !important}
+.option.selected .letter{background:#1f8a4c !important;color:#fff !important;border-color:#1f8a4c !important}
+.camel,.route-stages{display:none !important}
+.route-line{background:#d5e5d9 !important;height:6px !important;border-radius:6px !important}
+.route-fill{background:#1f8a4c !important;border-radius:6px !important}
+.score-big.pass,.verdict.pass,.correct-line{color:#1f8a4c !important}
+.score-big.fail,.verdict.fail,.yours{color:#c0392b !important}
+.num{color:#14301f !important}
+.pal button{background:#fff !important;border:1px solid #bcd3c3 !important;color:#14301f !important}
+.pal button.ans{background:#1f8a4c !important;color:#fff !important;border-color:#1f8a4c !important}
+.pal button.cur{outline:2px solid #14301f !important}
+::selection{background:#1f8a4c;color:#fff}
+</style></head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-mark">Sheun Hub · ECO 112</div>
+    <div class="brand-code">ECO 112</div>
+  </div>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup-screen">
+    <h1>Economics of Deforestation</h1>
+    <p class="subtitle">Forests and deforestation, causes, theoretical frameworks, land use economics, valuation, and economic and ecological impacts. Set up your run below.</p>
+
+    <div class="card">
+      <div class="field">
+        <label class="field-label">Number of questions</label>
+        <div class="chip-row" id="count-chips"></div>
+        <div class="custom-row">
+          <input type="number" id="custom-count" min="1" max="200" placeholder="custom">
+          <span>or type a custom amount (bank has <span id="bank-size"></span> questions)</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Time per question</label>
+        <div class="chip-row" id="time-chips">
+          <button class="chip" data-t="30">30s</button>
+          <button class="chip active" data-t="45">45s</button>
+          <button class="chip" data-t="60">60s</button>
+          <button class="chip" data-t="90">90s</button>
+          <button class="chip" data-t="0">No timer</button>
+        </div>
+      </div>
+
+      <button class="cta" id="start-btn" disabled>Select a question count to begin</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" class="hidden">
+    <div class="route">
+      <div class="route-line"><div class="route-fill" id="route-fill"></div></div>
+      <div class="camel" id="camel">🐫</div>
+      <div class="route-stages">
+        <div class="stage" id="stage0">Start</div>
+        <div class="stage" id="stage1">Quarter way</div>
+        <div class="stage" id="stage2">Half way</div>
+        <div class="stage" id="stage3">Finish</div>
+      </div>
+    </div>
+
+    <div class="top-bar">
+      <div class="q-count" id="q-count">Question 1 / 20</div>
+      <div class="timer" id="timer">0:45</div>
+    </div>
+
+    <div class="topic-tag" id="topic-tag">Introduction</div>
+    <div class="question" id="question-text"></div>
+    <div class="options" id="options"></div>
+
+    <div class="nav-row">
+      <button class="cta" id="next-btn" disabled>Answer to continue</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="hidden">
+    <div class="score-hero">
+      <div class="brand-mark" style="text-align:center;">Exam Complete</div>
+      <div class="score-big" id="score-big">0%</div>
+      <div class="score-sub" id="score-sub">0 / 0 correct</div>
+      <div class="verdict" id="verdict">—</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="stat-correct">0</div><div class="lbl">Correct</div></div>
+      <div class="stat"><div class="num" id="stat-wrong">0</div><div class="lbl">Wrong</div></div>
+      <div class="stat"><div class="num" id="stat-time">0:00</div><div class="lbl">Time used</div></div>
+    </div>
+
+    <button class="cta" id="retry-btn">Run another attempt</button>
+    <button class="cta secondary" id="review-toggle" style="margin-top:10px;">Show answer review</button>
+
+    <div id="review-list" class="hidden"></div>
+  </div>
+
+</div>
+
+<script>
+/* ===================== QUESTION BANK ===================== */
+const BANK = [
+{t:"Introduction", q:"Which of the following is a type of forest in the Week 1 classification?", o:["Tropical rainforest", "Tundra", "Wetland swamp", "Desert scrub"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"One of these is a type of forest in the Week 1 classification. Pick it.", o:["Tropical rainforest", "Savanna grassland", "Desert scrub", "Wetland swamp"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of the following is a type of forest in the Week 1 classification?", o:["Temperate forest", "Savanna grassland", "Wetland swamp", "Tundra"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"One of these is a type of forest in the Week 1 classification. Pick it.", o:["Temperate forest", "Tundra", "Desert scrub", "Savanna grassland"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of the following is a type of forest in the Week 1 classification?", o:["Boreal (Taiga) forest", "Wetland swamp", "Tundra", "Savanna grassland"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"One of these is a type of forest in the Week 1 classification. Pick it.", o:["Boreal (Taiga) forest", "Desert scrub", "Savanna grassland", "Tundra"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of the following is a type of forest in the Week 1 classification?", o:["Mangrove forest", "Wetland swamp", "Desert scrub", "Savanna grassland"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"One of these is a type of forest in the Week 1 classification. Pick it.", o:["Mangrove forest", "Wetland swamp", "Savanna grassland", "Tundra"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of the following is a type of forest in the Week 1 classification?", o:["Montane forest", "Desert scrub", "Tundra", "Wetland swamp"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"One of these is a type of forest in the Week 1 classification. Pick it.", o:["Montane forest", "Desert scrub", "Savanna grassland", "Tundra"], a:0, exp:"Per your notes: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of these is NOT a type of forest in the Week 1 classification?", o:["Savanna grassland", "Tropical rainforest", "Temperate forest", "Montane forest"], a:0, exp:"Not in your notes under this heading. The valid ones are: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of these is NOT a type of forest in the Week 1 classification?", o:["Desert scrub", "Temperate forest", "Montane forest", "Mangrove forest"], a:0, exp:"Not in your notes under this heading. The valid ones are: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of these is NOT a type of forest in the Week 1 classification?", o:["Tundra", "Boreal (Taiga) forest", "Temperate forest", "Montane forest"], a:0, exp:"Not in your notes under this heading. The valid ones are: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of these is NOT a type of forest in the Week 1 classification?", o:["Wetland swamp", "Temperate forest", "Montane forest", "Boreal (Taiga) forest"], a:0, exp:"Not in your notes under this heading. The valid ones are: Tropical rainforest, Temperate forest, Boreal (Taiga) forest, Mangrove forest, Montane forest."},
+{t:"Introduction", q:"Which of the following is a cause of forest degradation and depletion?", o:["Agricultural expansion", "Afforestation", "Carbon sequestration", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"One of these is a cause of forest degradation and depletion. Pick it.", o:["Agricultural expansion", "Reforestation", "Afforestation", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of the following is a cause of forest degradation and depletion?", o:["Infrastructure development", "Afforestation", "Reforestation", "Carbon sequestration"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"One of these is a cause of forest degradation and depletion. Pick it.", o:["Infrastructure development", "Reforestation", "Afforestation", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of the following is a cause of forest degradation and depletion?", o:["Logging", "Reforestation", "Agroforestry", "Afforestation"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"One of these is a cause of forest degradation and depletion. Pick it.", o:["Logging", "Reforestation", "Afforestation", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of the following is a cause of forest degradation and depletion?", o:["Fuelwood collection", "Agroforestry", "Afforestation", "Carbon sequestration"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"One of these is a cause of forest degradation and depletion. Pick it.", o:["Fuelwood collection", "Afforestation", "Carbon sequestration", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of the following is a cause of forest degradation and depletion?", o:["Urbanization", "Afforestation", "Reforestation", "Carbon sequestration"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"One of these is a cause of forest degradation and depletion. Pick it.", o:["Urbanization", "Reforestation", "Agroforestry", "Afforestation"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of the following is a cause of forest degradation and depletion?", o:["Industrial mining", "Carbon sequestration", "Reforestation", "Afforestation"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"One of these is a cause of forest degradation and depletion. Pick it.", o:["Industrial mining", "Agroforestry", "Afforestation", "Reforestation"], a:0, exp:"Per your notes: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of these is NOT a cause of forest degradation and depletion?", o:["Reforestation", "Fuelwood collection", "Agricultural expansion", "Infrastructure development"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of these is NOT a cause of forest degradation and depletion?", o:["Afforestation", "Urbanization", "Infrastructure development", "Agricultural expansion"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of these is NOT a cause of forest degradation and depletion?", o:["Agroforestry", "Infrastructure development", "Fuelwood collection", "Logging"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of these is NOT a cause of forest degradation and depletion?", o:["Carbon sequestration", "Urbanization", "Logging", "Industrial mining"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Infrastructure development, Logging, Fuelwood collection, Urbanization, Industrial mining."},
+{t:"Introduction", q:"Which of the following is a consequence of deforestation?", o:["Biodiversity loss", "Cleaner water supply", "Increased biodiversity", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"One of these is a consequence of deforestation. Pick it.", o:["Biodiversity loss", "Improved soil fertility", "Increased biodiversity", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of the following is a consequence of deforestation?", o:["Reduced carbon sequestration", "Increased biodiversity", "Cleaner water supply", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"One of these is a consequence of deforestation. Pick it.", o:["Reduced carbon sequestration", "Improved soil fertility", "Increased biodiversity", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of the following is a consequence of deforestation?", o:["Soil erosion and fertility loss", "Improved soil fertility", "Cleaner water supply", "Increased biodiversity"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"One of these is a consequence of deforestation. Pick it.", o:["Soil erosion and fertility loss", "Improved soil fertility", "Cleaner water supply", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of the following is a consequence of deforestation?", o:["Reduced availability of clean water", "Improved soil fertility", "Increased biodiversity", "Cleaner water supply"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"One of these is a consequence of deforestation. Pick it.", o:["Reduced availability of clean water", "Higher carbon absorption", "Improved soil fertility", "Cleaner water supply"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of the following is a consequence of deforestation?", o:["Displacement of indigenous peoples", "Cleaner water supply", "Increased biodiversity", "Improved soil fertility"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"One of these is a consequence of deforestation. Pick it.", o:["Displacement of indigenous peoples", "Increased biodiversity", "Improved soil fertility", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of the following is a consequence of deforestation?", o:["Loss of ecological resilience", "Increased biodiversity", "Cleaner water supply", "Higher carbon absorption"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"One of these is a consequence of deforestation. Pick it.", o:["Loss of ecological resilience", "Improved soil fertility", "Higher carbon absorption", "Cleaner water supply"], a:0, exp:"Per your notes: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of these is NOT a consequence of deforestation?", o:["Increased biodiversity", "Reduced carbon sequestration", "Biodiversity loss", "Displacement of indigenous peoples"], a:0, exp:"Not in your notes under this heading. The valid ones are: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of these is NOT a consequence of deforestation?", o:["Higher carbon absorption", "Reduced availability of clean water", "Soil erosion and fertility loss", "Reduced carbon sequestration"], a:0, exp:"Not in your notes under this heading. The valid ones are: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of these is NOT a consequence of deforestation?", o:["Improved soil fertility", "Reduced carbon sequestration", "Displacement of indigenous peoples", "Loss of ecological resilience"], a:0, exp:"Not in your notes under this heading. The valid ones are: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of these is NOT a consequence of deforestation?", o:["Cleaner water supply", "Loss of ecological resilience", "Reduced availability of clean water", "Biodiversity loss"], a:0, exp:"Not in your notes under this heading. The valid ones are: Biodiversity loss, Reduced carbon sequestration, Soil erosion and fertility loss, Reduced availability of clean water, Displacement of indigenous peoples, Loss of ecological resilience."},
+{t:"Introduction", q:"Which of the following is a non-market ecosystem service of forests?", o:["Climate regulation", "Paper production", "Fuelwood sales", "Logging jobs"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"One of these is a non-market ecosystem service of forests. Pick it.", o:["Climate regulation", "Paper production", "Timber for construction", "Fuelwood sales"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of the following is a non-market ecosystem service of forests?", o:["Water purification", "Logging jobs", "Timber for construction", "Paper production"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"One of these is a non-market ecosystem service of forests. Pick it.", o:["Water purification", "Paper production", "Logging jobs", "Fuelwood sales"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of the following is a non-market ecosystem service of forests?", o:["Flood control", "Fuelwood sales", "Logging jobs", "Paper production"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"One of these is a non-market ecosystem service of forests. Pick it.", o:["Flood control", "Fuelwood sales", "Paper production", "Logging jobs"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of the following is a non-market ecosystem service of forests?", o:["Soil conservation", "Fuelwood sales", "Paper production", "Timber for construction"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"One of these is a non-market ecosystem service of forests. Pick it.", o:["Soil conservation", "Timber for construction", "Paper production", "Fuelwood sales"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of the following is a non-market ecosystem service of forests?", o:["Biodiversity habitat", "Fuelwood sales", "Paper production", "Timber for construction"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"One of these is a non-market ecosystem service of forests. Pick it.", o:["Biodiversity habitat", "Timber for construction", "Paper production", "Logging jobs"], a:0, exp:"Per your notes: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of these is NOT a non-market ecosystem service of forests?", o:["Timber for construction", "Biodiversity habitat", "Flood control", "Climate regulation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of these is NOT a non-market ecosystem service of forests?", o:["Paper production", "Flood control", "Climate regulation", "Water purification"], a:0, exp:"Not in your notes under this heading. The valid ones are: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of these is NOT a non-market ecosystem service of forests?", o:["Logging jobs", "Flood control", "Biodiversity habitat", "Water purification"], a:0, exp:"Not in your notes under this heading. The valid ones are: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of these is NOT a non-market ecosystem service of forests?", o:["Fuelwood sales", "Flood control", "Biodiversity habitat", "Water purification"], a:0, exp:"Not in your notes under this heading. The valid ones are: Climate regulation, Water purification, Flood control, Soil conservation, Biodiversity habitat."},
+{t:"Introduction", q:"Which of the following is a non-timber forest product (NTFP)?", o:["Resins", "Paper pulp", "Bauxite", "Construction timber"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"One of these is a non-timber forest product (NTFP). Pick it.", o:["Resins", "Coal", "Bauxite", "Paper pulp"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of the following is a non-timber forest product (NTFP)?", o:["Fruits", "Bauxite", "Coal", "Paper pulp"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"One of these is a non-timber forest product (NTFP). Pick it.", o:["Fruits", "Coal", "Paper pulp", "Bauxite"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of the following is a non-timber forest product (NTFP)?", o:["Herbs", "Bauxite", "Paper pulp", "Coal"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"One of these is a non-timber forest product (NTFP). Pick it.", o:["Herbs", "Coal", "Paper pulp", "Construction timber"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of the following is a non-timber forest product (NTFP)?", o:["Oils", "Coal", "Paper pulp", "Bauxite"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"One of these is a non-timber forest product (NTFP). Pick it.", o:["Oils", "Paper pulp", "Bauxite", "Construction timber"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of the following is a non-timber forest product (NTFP)?", o:["Honey", "Paper pulp", "Coal", "Bauxite"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"One of these is a non-timber forest product (NTFP). Pick it.", o:["Honey", "Bauxite", "Coal", "Construction timber"], a:0, exp:"Per your notes: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of these is NOT a non-timber forest product (NTFP)?", o:["Construction timber", "Oils", "Fruits", "Herbs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of these is NOT a non-timber forest product (NTFP)?", o:["Paper pulp", "Honey", "Oils", "Fruits"], a:0, exp:"Not in your notes under this heading. The valid ones are: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of these is NOT a non-timber forest product (NTFP)?", o:["Bauxite", "Honey", "Herbs", "Oils"], a:0, exp:"Not in your notes under this heading. The valid ones are: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of these is NOT a non-timber forest product (NTFP)?", o:["Coal", "Resins", "Fruits", "Honey"], a:0, exp:"Not in your notes under this heading. The valid ones are: Resins, Fruits, Herbs, Oils, Honey."},
+{t:"Introduction", q:"Which of the following is a market benefit or employment source from forests?", o:["Timber for construction and paper", "Soil conservation", "Flood control", "Carbon sequestration"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"One of these is a market benefit or employment source from forests. Pick it.", o:["Timber for construction and paper", "Water purification", "Flood control", "Carbon sequestration"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of the following is a market benefit or employment source from forests?", o:["Jobs in logging and processing", "Carbon sequestration", "Water purification", "Soil conservation"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"One of these is a market benefit or employment source from forests. Pick it.", o:["Jobs in logging and processing", "Water purification", "Carbon sequestration", "Flood control"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of the following is a market benefit or employment source from forests?", o:["Tourism jobs", "Carbon sequestration", "Water purification", "Soil conservation"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"One of these is a market benefit or employment source from forests. Pick it.", o:["Tourism jobs", "Soil conservation", "Carbon sequestration", "Flood control"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of the following is a market benefit or employment source from forests?", o:["Conservation jobs", "Soil conservation", "Water purification", "Flood control"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"One of these is a market benefit or employment source from forests. Pick it.", o:["Conservation jobs", "Soil conservation", "Flood control", "Carbon sequestration"], a:0, exp:"Per your notes: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of these is NOT a market benefit or employment source from forests?", o:["Carbon sequestration", "Jobs in logging and processing", "Timber for construction and paper", "Conservation jobs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of these is NOT a market benefit or employment source from forests?", o:["Water purification", "Timber for construction and paper", "Jobs in logging and processing", "Tourism jobs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of these is NOT a market benefit or employment source from forests?", o:["Flood control", "Tourism jobs", "Jobs in logging and processing", "Timber for construction and paper"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Introduction", q:"Which of these is NOT a market benefit or employment source from forests?", o:["Soil conservation", "Tourism jobs", "Timber for construction and paper", "Jobs in logging and processing"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber for construction and paper, Jobs in logging and processing, Tourism jobs, Conservation jobs."},
+{t:"Causes", q:"Which of the following is an economic driver of deforestation in Week 2?", o:["Agricultural expansion", "Reforestation programs", "Agroforestry", "Payments for ecosystem services"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"One of these is an economic driver of deforestation in Week 2. Pick it.", o:["Agricultural expansion", "Payments for ecosystem services", "Agroforestry", "Reforestation programs"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of the following is an economic driver of deforestation in Week 2?", o:["Commercial logging", "Afforestation", "Agroforestry", "Payments for ecosystem services"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"One of these is an economic driver of deforestation in Week 2. Pick it.", o:["Commercial logging", "Afforestation", "Reforestation programs", "Payments for ecosystem services"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of the following is an economic driver of deforestation in Week 2?", o:["Infrastructure projects", "Afforestation", "Payments for ecosystem services", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"One of these is an economic driver of deforestation in Week 2. Pick it.", o:["Infrastructure projects", "Agroforestry", "Reforestation programs", "Payments for ecosystem services"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of the following is an economic driver of deforestation in Week 2?", o:["Mining", "Payments for ecosystem services", "Afforestation", "Reforestation programs"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"One of these is an economic driver of deforestation in Week 2. Pick it.", o:["Mining", "Afforestation", "Reforestation programs", "Agroforestry"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of the following is an economic driver of deforestation in Week 2?", o:["Urbanization", "Agroforestry", "Afforestation", "Payments for ecosystem services"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"One of these is an economic driver of deforestation in Week 2. Pick it.", o:["Urbanization", "Afforestation", "Agroforestry", "Reforestation programs"], a:0, exp:"Per your notes: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of these is NOT an economic driver of deforestation in Week 2?", o:["Reforestation programs", "Mining", "Infrastructure projects", "Commercial logging"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of these is NOT an economic driver of deforestation in Week 2?", o:["Agroforestry", "Mining", "Urbanization", "Agricultural expansion"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of these is NOT an economic driver of deforestation in Week 2?", o:["Payments for ecosystem services", "Urbanization", "Infrastructure projects", "Mining"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of these is NOT an economic driver of deforestation in Week 2?", o:["Afforestation", "Infrastructure projects", "Mining", "Commercial logging"], a:0, exp:"Not in your notes under this heading. The valid ones are: Agricultural expansion, Commercial logging, Infrastructure projects, Mining, Urbanization."},
+{t:"Causes", q:"Which of the following is a commercial cash crop or enterprise linked to forest clearing?", o:["Cocoa", "Gold mining", "Bauxite mining", "Hydropower"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"One of these is a commercial cash crop or enterprise linked to forest clearing. Pick it.", o:["Cocoa", "Timber plantations only", "Hydropower", "Gold mining"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of the following is a commercial cash crop or enterprise linked to forest clearing?", o:["Oil palm", "Hydropower", "Gold mining", "Bauxite mining"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"One of these is a commercial cash crop or enterprise linked to forest clearing. Pick it.", o:["Oil palm", "Bauxite mining", "Timber plantations only", "Hydropower"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of the following is a commercial cash crop or enterprise linked to forest clearing?", o:["Soybeans", "Hydropower", "Gold mining", "Bauxite mining"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"One of these is a commercial cash crop or enterprise linked to forest clearing. Pick it.", o:["Soybeans", "Hydropower", "Gold mining", "Bauxite mining"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of the following is a commercial cash crop or enterprise linked to forest clearing?", o:["Rubber", "Gold mining", "Timber plantations only", "Hydropower"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"One of these is a commercial cash crop or enterprise linked to forest clearing. Pick it.", o:["Rubber", "Hydropower", "Gold mining", "Bauxite mining"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of the following is a commercial cash crop or enterprise linked to forest clearing?", o:["Cattle ranching", "Hydropower", "Gold mining", "Timber plantations only"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"One of these is a commercial cash crop or enterprise linked to forest clearing. Pick it.", o:["Cattle ranching", "Hydropower", "Timber plantations only", "Gold mining"], a:0, exp:"Per your notes: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of these is NOT a commercial cash crop or enterprise linked to forest clearing?", o:["Bauxite mining", "Soybeans", "Rubber", "Cattle ranching"], a:0, exp:"Not in your notes under this heading. The valid ones are: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of these is NOT a commercial cash crop or enterprise linked to forest clearing?", o:["Hydropower", "Rubber", "Cocoa", "Cattle ranching"], a:0, exp:"Not in your notes under this heading. The valid ones are: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of these is NOT a commercial cash crop or enterprise linked to forest clearing?", o:["Timber plantations only", "Oil palm", "Soybeans", "Cattle ranching"], a:0, exp:"Not in your notes under this heading. The valid ones are: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of these is NOT a commercial cash crop or enterprise linked to forest clearing?", o:["Gold mining", "Cattle ranching", "Soybeans", "Rubber"], a:0, exp:"Not in your notes under this heading. The valid ones are: Cocoa, Oil palm, Soybeans, Rubber, Cattle ranching."},
+{t:"Causes", q:"Which of the following is an economic motivation for logging?", o:["Revenue generation", "Carbon storage", "Habitat protection", "Soil conservation"], a:0, exp:"Per your notes: Revenue generation, Employment creation, Industrial demand for timber."},
+{t:"Causes", q:"Which of the following is an economic motivation for logging?", o:["Employment creation", "Carbon storage", "Soil conservation", "Habitat protection"], a:0, exp:"Per your notes: Revenue generation, Employment creation, Industrial demand for timber."},
+{t:"Causes", q:"Which of the following is an economic motivation for logging?", o:["Industrial demand for timber", "Habitat protection", "Soil conservation", "Carbon storage"], a:0, exp:"Per your notes: Revenue generation, Employment creation, Industrial demand for timber."},
+{t:"Causes", q:"Which of these is NOT an economic motivation for logging?", o:["Habitat protection", "Industrial demand for timber", "Employment creation", "Revenue generation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Revenue generation, Employment creation, Industrial demand for timber."},
+{t:"Causes", q:"Which of these is NOT an economic motivation for logging?", o:["Carbon storage", "Industrial demand for timber", "Revenue generation", "Employment creation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Revenue generation, Employment creation, Industrial demand for timber."},
+{t:"Causes", q:"Which of these is NOT an economic motivation for logging?", o:["Soil conservation", "Employment creation", "Industrial demand for timber", "Revenue generation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Revenue generation, Employment creation, Industrial demand for timber."},
+{t:"Causes", q:"Which of the following is a challenge or problem linked to logging?", o:["Illegal logging", "Revenue generation", "Industrial demand", "Creation of rural jobs"], a:0, exp:"Per your notes: Illegal logging, Unsustainable practices, Habitat destruction for endangered species."},
+{t:"Causes", q:"Which of the following is a challenge or problem linked to logging?", o:["Unsustainable practices", "Industrial demand", "Creation of rural jobs", "Revenue generation"], a:0, exp:"Per your notes: Illegal logging, Unsustainable practices, Habitat destruction for endangered species."},
+{t:"Causes", q:"Which of the following is a challenge or problem linked to logging?", o:["Habitat destruction for endangered species", "Revenue generation", "Creation of rural jobs", "Industrial demand"], a:0, exp:"Per your notes: Illegal logging, Unsustainable practices, Habitat destruction for endangered species."},
+{t:"Causes", q:"Which of these is NOT a challenge or problem linked to logging?", o:["Creation of rural jobs", "Illegal logging", "Unsustainable practices", "Habitat destruction for endangered species"], a:0, exp:"Not in your notes under this heading. The valid ones are: Illegal logging, Unsustainable practices, Habitat destruction for endangered species."},
+{t:"Causes", q:"Which of these is NOT a challenge or problem linked to logging?", o:["Revenue generation", "Habitat destruction for endangered species", "Unsustainable practices", "Illegal logging"], a:0, exp:"Not in your notes under this heading. The valid ones are: Illegal logging, Unsustainable practices, Habitat destruction for endangered species."},
+{t:"Causes", q:"Which of these is NOT a challenge or problem linked to logging?", o:["Industrial demand", "Illegal logging", "Habitat destruction for endangered species", "Unsustainable practices"], a:0, exp:"Not in your notes under this heading. The valid ones are: Illegal logging, Unsustainable practices, Habitat destruction for endangered species."},
+{t:"Causes", q:"Which of the following is an economic justification for infrastructure projects?", o:["Accessibility and connectivity", "Reduced runoff", "Carbon storage", "Habitat protection"], a:0, exp:"Per your notes: Accessibility and connectivity, Energy generation, Social amenities."},
+{t:"Causes", q:"Which of the following is an economic justification for infrastructure projects?", o:["Energy generation", "Reduced runoff", "Habitat protection", "Carbon storage"], a:0, exp:"Per your notes: Accessibility and connectivity, Energy generation, Social amenities."},
+{t:"Causes", q:"Which of the following is an economic justification for infrastructure projects?", o:["Social amenities", "Reduced runoff", "Habitat protection", "Carbon storage"], a:0, exp:"Per your notes: Accessibility and connectivity, Energy generation, Social amenities."},
+{t:"Causes", q:"Which of these is NOT an economic justification for infrastructure projects?", o:["Habitat protection", "Social amenities", "Accessibility and connectivity", "Energy generation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Accessibility and connectivity, Energy generation, Social amenities."},
+{t:"Causes", q:"Which of these is NOT an economic justification for infrastructure projects?", o:["Carbon storage", "Accessibility and connectivity", "Social amenities", "Energy generation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Accessibility and connectivity, Energy generation, Social amenities."},
+{t:"Causes", q:"Which of these is NOT an economic justification for infrastructure projects?", o:["Reduced runoff", "Energy generation", "Social amenities", "Accessibility and connectivity"], a:0, exp:"Not in your notes under this heading. The valid ones are: Accessibility and connectivity, Energy generation, Social amenities."},
+{t:"Causes", q:"Which of the following is an economic imperative for mining?", o:["Foreign direct investment", "Water pollution", "Displacement of indigenous communities", "Toxic waste"], a:0, exp:"Per your notes: Foreign direct investment, Royalties and taxes for government, Job creation."},
+{t:"Causes", q:"Which of the following is an economic imperative for mining?", o:["Royalties and taxes for government", "Toxic waste", "Displacement of indigenous communities", "Water pollution"], a:0, exp:"Per your notes: Foreign direct investment, Royalties and taxes for government, Job creation."},
+{t:"Causes", q:"Which of the following is an economic imperative for mining?", o:["Job creation", "Displacement of indigenous communities", "Toxic waste", "Water pollution"], a:0, exp:"Per your notes: Foreign direct investment, Royalties and taxes for government, Job creation."},
+{t:"Causes", q:"Which of these is NOT an economic imperative for mining?", o:["Toxic waste", "Royalties and taxes for government", "Job creation", "Foreign direct investment"], a:0, exp:"Not in your notes under this heading. The valid ones are: Foreign direct investment, Royalties and taxes for government, Job creation."},
+{t:"Causes", q:"Which of these is NOT an economic imperative for mining?", o:["Water pollution", "Foreign direct investment", "Job creation", "Royalties and taxes for government"], a:0, exp:"Not in your notes under this heading. The valid ones are: Foreign direct investment, Royalties and taxes for government, Job creation."},
+{t:"Causes", q:"Which of these is NOT an economic imperative for mining?", o:["Displacement of indigenous communities", "Foreign direct investment", "Job creation", "Royalties and taxes for government"], a:0, exp:"Not in your notes under this heading. The valid ones are: Foreign direct investment, Royalties and taxes for government, Job creation."},
+{t:"Causes", q:"Which of the following is an environmental cost of mining?", o:["Deforestation and landscape alteration", "Foreign direct investment", "Job creation", "Royalties and taxes"], a:0, exp:"Per your notes: Deforestation and landscape alteration, Toxic waste and water pollution, Displacement of indigenous communities."},
+{t:"Causes", q:"Which of the following is an environmental cost of mining?", o:["Toxic waste and water pollution", "Job creation", "Foreign direct investment", "Royalties and taxes"], a:0, exp:"Per your notes: Deforestation and landscape alteration, Toxic waste and water pollution, Displacement of indigenous communities."},
+{t:"Causes", q:"Which of the following is an environmental cost of mining?", o:["Displacement of indigenous communities", "Foreign direct investment", "Job creation", "Royalties and taxes"], a:0, exp:"Per your notes: Deforestation and landscape alteration, Toxic waste and water pollution, Displacement of indigenous communities."},
+{t:"Causes", q:"Which of these is NOT an environmental cost of mining?", o:["Foreign direct investment", "Displacement of indigenous communities", "Deforestation and landscape alteration", "Toxic waste and water pollution"], a:0, exp:"Not in your notes under this heading. The valid ones are: Deforestation and landscape alteration, Toxic waste and water pollution, Displacement of indigenous communities."},
+{t:"Causes", q:"Which of these is NOT an environmental cost of mining?", o:["Royalties and taxes", "Toxic waste and water pollution", "Deforestation and landscape alteration", "Displacement of indigenous communities"], a:0, exp:"Not in your notes under this heading. The valid ones are: Deforestation and landscape alteration, Toxic waste and water pollution, Displacement of indigenous communities."},
+{t:"Causes", q:"Which of these is NOT an environmental cost of mining?", o:["Job creation", "Displacement of indigenous communities", "Toxic waste and water pollution", "Deforestation and landscape alteration"], a:0, exp:"Not in your notes under this heading. The valid ones are: Deforestation and landscape alteration, Toxic waste and water pollution, Displacement of indigenous communities."},
+{t:"Causes", q:"Which of the following is an economic driver of urbanization-related forest loss?", o:["Population growth", "Fragmentation of ecosystems", "Increased greenhouse gas emissions", "Urban heat islands"], a:0, exp:"Per your notes: Population growth, Industrialization, Real estate development."},
+{t:"Causes", q:"Which of the following is an economic driver of urbanization-related forest loss?", o:["Industrialization", "Urban heat islands", "Fragmentation of ecosystems", "Increased greenhouse gas emissions"], a:0, exp:"Per your notes: Population growth, Industrialization, Real estate development."},
+{t:"Causes", q:"Which of the following is an economic driver of urbanization-related forest loss?", o:["Real estate development", "Increased greenhouse gas emissions", "Fragmentation of ecosystems", "Urban heat islands"], a:0, exp:"Per your notes: Population growth, Industrialization, Real estate development."},
+{t:"Causes", q:"Which of these is NOT an economic driver of urbanization-related forest loss?", o:["Urban heat islands", "Industrialization", "Population growth", "Real estate development"], a:0, exp:"Not in your notes under this heading. The valid ones are: Population growth, Industrialization, Real estate development."},
+{t:"Causes", q:"Which of these is NOT an economic driver of urbanization-related forest loss?", o:["Fragmentation of ecosystems", "Industrialization", "Real estate development", "Population growth"], a:0, exp:"Not in your notes under this heading. The valid ones are: Population growth, Industrialization, Real estate development."},
+{t:"Causes", q:"Which of these is NOT an economic driver of urbanization-related forest loss?", o:["Increased greenhouse gas emissions", "Population growth", "Industrialization", "Real estate development"], a:0, exp:"Not in your notes under this heading. The valid ones are: Population growth, Industrialization, Real estate development."},
+{t:"Causes", q:"Which of the following is an impact of urbanization on forests and climate?", o:["Urban heat islands", "Real estate development", "Industrialization", "Population growth"], a:0, exp:"Per your notes: Urban heat islands, Increased greenhouse gas emissions, Fragmentation of ecosystems."},
+{t:"Causes", q:"Which of the following is an impact of urbanization on forests and climate?", o:["Increased greenhouse gas emissions", "Population growth", "Real estate development", "Industrialization"], a:0, exp:"Per your notes: Urban heat islands, Increased greenhouse gas emissions, Fragmentation of ecosystems."},
+{t:"Causes", q:"Which of the following is an impact of urbanization on forests and climate?", o:["Fragmentation of ecosystems", "Population growth", "Real estate development", "Industrialization"], a:0, exp:"Per your notes: Urban heat islands, Increased greenhouse gas emissions, Fragmentation of ecosystems."},
+{t:"Causes", q:"Which of these is NOT an impact of urbanization on forests and climate?", o:["Population growth", "Urban heat islands", "Increased greenhouse gas emissions", "Fragmentation of ecosystems"], a:0, exp:"Not in your notes under this heading. The valid ones are: Urban heat islands, Increased greenhouse gas emissions, Fragmentation of ecosystems."},
+{t:"Causes", q:"Which of these is NOT an impact of urbanization on forests and climate?", o:["Industrialization", "Increased greenhouse gas emissions", "Fragmentation of ecosystems", "Urban heat islands"], a:0, exp:"Not in your notes under this heading. The valid ones are: Urban heat islands, Increased greenhouse gas emissions, Fragmentation of ecosystems."},
+{t:"Causes", q:"Which of these is NOT an impact of urbanization on forests and climate?", o:["Real estate development", "Increased greenhouse gas emissions", "Urban heat islands", "Fragmentation of ecosystems"], a:0, exp:"Not in your notes under this heading. The valid ones are: Urban heat islands, Increased greenhouse gas emissions, Fragmentation of ecosystems."},
+{t:"Causes", q:"Which of the following is a recommended solution to deforestation in Week 2?", o:["Sustainable agriculture and agroforestry", "Building roads through reserves", "Expanding farmland into forests", "Urban sprawl"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"One of these is a recommended solution to deforestation in Week 2. Pick it.", o:["Sustainable agriculture and agroforestry", "Building roads through reserves", "Urban sprawl", "Expanding farmland into forests"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of the following is a recommended solution to deforestation in Week 2?", o:["Legal reforms against illegal logging", "Expanding farmland into forests", "Building roads through reserves", "Relaxing logging laws"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"One of these is a recommended solution to deforestation in Week 2. Pick it.", o:["Legal reforms against illegal logging", "Relaxing logging laws", "Expanding farmland into forests", "Building roads through reserves"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of the following is a recommended solution to deforestation in Week 2?", o:["Green infrastructure", "Urban sprawl", "Expanding farmland into forests", "Relaxing logging laws"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"One of these is a recommended solution to deforestation in Week 2. Pick it.", o:["Green infrastructure", "Urban sprawl", "Building roads through reserves", "Relaxing logging laws"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of the following is a recommended solution to deforestation in Week 2?", o:["Reforestation programs", "Building roads through reserves", "Relaxing logging laws", "Expanding farmland into forests"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"One of these is a recommended solution to deforestation in Week 2. Pick it.", o:["Reforestation programs", "Urban sprawl", "Building roads through reserves", "Relaxing logging laws"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of the following is a recommended solution to deforestation in Week 2?", o:["Urban planning and vertical development", "Building roads through reserves", "Relaxing logging laws", "Expanding farmland into forests"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"One of these is a recommended solution to deforestation in Week 2. Pick it.", o:["Urban planning and vertical development", "Relaxing logging laws", "Urban sprawl", "Expanding farmland into forests"], a:0, exp:"Per your notes: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of these is NOT a recommended solution to deforestation in Week 2?", o:["Expanding farmland into forests", "Reforestation programs", "Sustainable agriculture and agroforestry", "Urban planning and vertical development"], a:0, exp:"Not in your notes under this heading. The valid ones are: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of these is NOT a recommended solution to deforestation in Week 2?", o:["Relaxing logging laws", "Sustainable agriculture and agroforestry", "Urban planning and vertical development", "Reforestation programs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of these is NOT a recommended solution to deforestation in Week 2?", o:["Urban sprawl", "Legal reforms against illegal logging", "Urban planning and vertical development", "Sustainable agriculture and agroforestry"], a:0, exp:"Not in your notes under this heading. The valid ones are: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Causes", q:"Which of these is NOT a recommended solution to deforestation in Week 2?", o:["Building roads through reserves", "Reforestation programs", "Urban planning and vertical development", "Green infrastructure"], a:0, exp:"Not in your notes under this heading. The valid ones are: Sustainable agriculture and agroforestry, Legal reforms against illegal logging, Green infrastructure, Reforestation programs, Urban planning and vertical development."},
+{t:"Theoretical Frameworks", q:"Which of the following is a theoretical framework for understanding deforestation?", o:["Environmental Kuznets Curve", "Travel cost method", "Von Thunen model", "Faustmann model"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"One of these is a theoretical framework for understanding deforestation. Pick it.", o:["Environmental Kuznets Curve", "Hedonic pricing", "Faustmann model", "Travel cost method"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of the following is a theoretical framework for understanding deforestation?", o:["Tragedy of the Commons", "Travel cost method", "Faustmann model", "Hedonic pricing"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"One of these is a theoretical framework for understanding deforestation. Pick it.", o:["Tragedy of the Commons", "Von Thunen model", "Hedonic pricing", "Travel cost method"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of the following is a theoretical framework for understanding deforestation?", o:["Market failures and externalities", "Faustmann model", "Von Thunen model", "Hedonic pricing"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"One of these is a theoretical framework for understanding deforestation. Pick it.", o:["Market failures and externalities", "Hedonic pricing", "Faustmann model", "Von Thunen model"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of the following is a theoretical framework for understanding deforestation?", o:["Open access resource theory", "Travel cost method", "Von Thunen model", "Faustmann model"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"One of these is a theoretical framework for understanding deforestation. Pick it.", o:["Open access resource theory", "Faustmann model", "Hedonic pricing", "Von Thunen model"], a:0, exp:"Per your notes: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a theoretical framework for understanding deforestation?", o:["Von Thunen model", "Environmental Kuznets Curve", "Tragedy of the Commons", "Open access resource theory"], a:0, exp:"Not in your notes under this heading. The valid ones are: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a theoretical framework for understanding deforestation?", o:["Faustmann model", "Market failures and externalities", "Tragedy of the Commons", "Open access resource theory"], a:0, exp:"Not in your notes under this heading. The valid ones are: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a theoretical framework for understanding deforestation?", o:["Travel cost method", "Environmental Kuznets Curve", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Not in your notes under this heading. The valid ones are: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a theoretical framework for understanding deforestation?", o:["Hedonic pricing", "Open access resource theory", "Tragedy of the Commons", "Environmental Kuznets Curve"], a:0, exp:"Not in your notes under this heading. The valid ones are: Environmental Kuznets Curve, Tragedy of the Commons, Market failures and externalities, Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which of the following is a critique of the Environmental Kuznets Curve?", o:["It oversimplifies growth and environment links", "It shows degradation always falls with growth", "It was proposed by Hardin in 1968", "It requires no income data"], a:0, exp:"Per your notes: It oversimplifies growth and environment links, It ignores globalization and trade displacement, It may not apply to tropical forests driven by external demand."},
+{t:"Theoretical Frameworks", q:"Which of the following is a critique of the Environmental Kuznets Curve?", o:["It ignores globalization and trade displacement", "It was proposed by Hardin in 1968", "It shows degradation always falls with growth", "It requires no income data"], a:0, exp:"Per your notes: It oversimplifies growth and environment links, It ignores globalization and trade displacement, It may not apply to tropical forests driven by external demand."},
+{t:"Theoretical Frameworks", q:"Which of the following is a critique of the Environmental Kuznets Curve?", o:["It may not apply to tropical forests driven by external demand", "It shows degradation always falls with growth", "It requires no income data", "It was proposed by Hardin in 1968"], a:0, exp:"Per your notes: It oversimplifies growth and environment links, It ignores globalization and trade displacement, It may not apply to tropical forests driven by external demand."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a critique of the Environmental Kuznets Curve?", o:["It shows degradation always falls with growth", "It may not apply to tropical forests driven by external demand", "It oversimplifies growth and environment links", "It ignores globalization and trade displacement"], a:0, exp:"Not in your notes under this heading. The valid ones are: It oversimplifies growth and environment links, It ignores globalization and trade displacement, It may not apply to tropical forests driven by external demand."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a critique of the Environmental Kuznets Curve?", o:["It was proposed by Hardin in 1968", "It may not apply to tropical forests driven by external demand", "It ignores globalization and trade displacement", "It oversimplifies growth and environment links"], a:0, exp:"Not in your notes under this heading. The valid ones are: It oversimplifies growth and environment links, It ignores globalization and trade displacement, It may not apply to tropical forests driven by external demand."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a critique of the Environmental Kuznets Curve?", o:["It requires no income data", "It may not apply to tropical forests driven by external demand", "It ignores globalization and trade displacement", "It oversimplifies growth and environment links"], a:0, exp:"Not in your notes under this heading. The valid ones are: It oversimplifies growth and environment links, It ignores globalization and trade displacement, It may not apply to tropical forests driven by external demand."},
+{t:"Theoretical Frameworks", q:"Which of the following is a policy to correct market failure in deforestation?", o:["Carbon taxes", "Removing logging limits", "Ignoring externalities", "Free access to forests"], a:0, exp:"Per your notes: Carbon taxes, Forest conservation subsidies, Payments for ecosystem services."},
+{t:"Theoretical Frameworks", q:"Which of the following is a policy to correct market failure in deforestation?", o:["Forest conservation subsidies", "Free access to forests", "Removing logging limits", "Ignoring externalities"], a:0, exp:"Per your notes: Carbon taxes, Forest conservation subsidies, Payments for ecosystem services."},
+{t:"Theoretical Frameworks", q:"Which of the following is a policy to correct market failure in deforestation?", o:["Payments for ecosystem services", "Free access to forests", "Ignoring externalities", "Removing logging limits"], a:0, exp:"Per your notes: Carbon taxes, Forest conservation subsidies, Payments for ecosystem services."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a policy to correct market failure in deforestation?", o:["Free access to forests", "Carbon taxes", "Forest conservation subsidies", "Payments for ecosystem services"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon taxes, Forest conservation subsidies, Payments for ecosystem services."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a policy to correct market failure in deforestation?", o:["Removing logging limits", "Carbon taxes", "Forest conservation subsidies", "Payments for ecosystem services"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon taxes, Forest conservation subsidies, Payments for ecosystem services."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a policy to correct market failure in deforestation?", o:["Ignoring externalities", "Forest conservation subsidies", "Payments for ecosystem services", "Carbon taxes"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon taxes, Forest conservation subsidies, Payments for ecosystem services."},
+{t:"Theoretical Frameworks", q:"Which of the following is a solution to open access overexploitation?", o:["Property rights", "Unlimited access", "Free logging permits", "Removing regulations"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"One of these is a solution to open access overexploitation. Pick it.", o:["Property rights", "Unlimited access", "Free logging permits", "Removing regulations"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"Which of the following is a solution to open access overexploitation?", o:["Community-based management", "Removing regulations", "Unlimited access", "Free logging permits"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"One of these is a solution to open access overexploitation. Pick it.", o:["Community-based management", "Unlimited access", "Free logging permits", "Removing regulations"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"Which of the following is a solution to open access overexploitation?", o:["Protected areas", "Removing regulations", "Free logging permits", "Unlimited access"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"One of these is a solution to open access overexploitation. Pick it.", o:["Protected areas", "Unlimited access", "Removing regulations", "Free logging permits"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"Which of the following is a solution to open access overexploitation?", o:["Sustainable forestry certification", "Removing regulations", "Free logging permits", "Unlimited access"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"One of these is a solution to open access overexploitation. Pick it.", o:["Sustainable forestry certification", "Unlimited access", "Free logging permits", "Removing regulations"], a:0, exp:"Per your notes: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a solution to open access overexploitation?", o:["Unlimited access", "Sustainable forestry certification", "Property rights", "Protected areas"], a:0, exp:"Not in your notes under this heading. The valid ones are: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a solution to open access overexploitation?", o:["Removing regulations", "Property rights", "Community-based management", "Sustainable forestry certification"], a:0, exp:"Not in your notes under this heading. The valid ones are: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Theoretical Frameworks", q:"Which of these is NOT a solution to open access overexploitation?", o:["Free logging permits", "Property rights", "Protected areas", "Sustainable forestry certification"], a:0, exp:"Not in your notes under this heading. The valid ones are: Property rights, Community-based management, Protected areas, Sustainable forestry certification."},
+{t:"Land Use Economics", q:"Which of the following is an economic model of land conversion?", o:["Von Thunen model", "Environmental Kuznets Curve", "Contingent valuation", "Hedonic pricing"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"One of these is an economic model of land conversion. Pick it.", o:["Von Thunen model", "Environmental Kuznets Curve", "Travel cost method", "Contingent valuation"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of the following is an economic model of land conversion?", o:["Faustmann model", "Hedonic pricing", "Travel cost method", "Contingent valuation"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"One of these is an economic model of land conversion. Pick it.", o:["Faustmann model", "Travel cost method", "Contingent valuation", "Environmental Kuznets Curve"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of the following is an economic model of land conversion?", o:["Land rent theory", "Contingent valuation", "Hedonic pricing", "Travel cost method"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"One of these is an economic model of land conversion. Pick it.", o:["Land rent theory", "Travel cost method", "Contingent valuation", "Environmental Kuznets Curve"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of the following is an economic model of land conversion?", o:["Real options approach", "Travel cost method", "Hedonic pricing", "Contingent valuation"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"One of these is an economic model of land conversion. Pick it.", o:["Real options approach", "Environmental Kuznets Curve", "Travel cost method", "Contingent valuation"], a:0, exp:"Per your notes: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of these is NOT an economic model of land conversion?", o:["Environmental Kuznets Curve", "Land rent theory", "Von Thunen model", "Real options approach"], a:0, exp:"Not in your notes under this heading. The valid ones are: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of these is NOT an economic model of land conversion?", o:["Travel cost method", "Von Thunen model", "Faustmann model", "Real options approach"], a:0, exp:"Not in your notes under this heading. The valid ones are: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of these is NOT an economic model of land conversion?", o:["Contingent valuation", "Von Thunen model", "Faustmann model", "Real options approach"], a:0, exp:"Not in your notes under this heading. The valid ones are: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of these is NOT an economic model of land conversion?", o:["Hedonic pricing", "Land rent theory", "Von Thunen model", "Faustmann model"], a:0, exp:"Not in your notes under this heading. The valid ones are: Von Thunen model, Faustmann model, Land rent theory, Real options approach."},
+{t:"Land Use Economics", q:"Which of the following is a non-market valuation technique in Week 4?", o:["Contingent valuation", "Discounting", "Timber market pricing", "Taxation"], a:0, exp:"Per your notes: Contingent valuation, Travel cost method, Hedonic pricing."},
+{t:"Land Use Economics", q:"Which of the following is a non-market valuation technique in Week 4?", o:["Travel cost method", "Discounting", "Timber market pricing", "Taxation"], a:0, exp:"Per your notes: Contingent valuation, Travel cost method, Hedonic pricing."},
+{t:"Land Use Economics", q:"Which of the following is a non-market valuation technique in Week 4?", o:["Hedonic pricing", "Taxation", "Timber market pricing", "Discounting"], a:0, exp:"Per your notes: Contingent valuation, Travel cost method, Hedonic pricing."},
+{t:"Land Use Economics", q:"Which of these is NOT a non-market valuation technique in Week 4?", o:["Timber market pricing", "Travel cost method", "Hedonic pricing", "Contingent valuation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Contingent valuation, Travel cost method, Hedonic pricing."},
+{t:"Land Use Economics", q:"Which of these is NOT a non-market valuation technique in Week 4?", o:["Taxation", "Hedonic pricing", "Contingent valuation", "Travel cost method"], a:0, exp:"Not in your notes under this heading. The valid ones are: Contingent valuation, Travel cost method, Hedonic pricing."},
+{t:"Land Use Economics", q:"Which of these is NOT a non-market valuation technique in Week 4?", o:["Discounting", "Hedonic pricing", "Contingent valuation", "Travel cost method"], a:0, exp:"Not in your notes under this heading. The valid ones are: Contingent valuation, Travel cost method, Hedonic pricing."},
+{t:"Land Use Economics", q:"Which of the following is a policy instrument for reducing deforestation?", o:["Payments for Ecosystem Services", "Slash-and-burn subsidies", "Open access", "Unregulated logging"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"One of these is a policy instrument for reducing deforestation. Pick it.", o:["Payments for Ecosystem Services", "Unregulated logging", "Open access", "Slash-and-burn subsidies"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of the following is a policy instrument for reducing deforestation?", o:["REDD+", "Slash-and-burn subsidies", "Open access", "Unregulated logging"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"One of these is a policy instrument for reducing deforestation. Pick it.", o:["REDD+", "Unregulated logging", "Open access", "Slash-and-burn subsidies"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of the following is a policy instrument for reducing deforestation?", o:["Zoning laws and protected areas", "Open access", "Slash-and-burn subsidies", "Unregulated logging"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"One of these is a policy instrument for reducing deforestation. Pick it.", o:["Zoning laws and protected areas", "Open access", "Slash-and-burn subsidies", "Unregulated logging"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of the following is a policy instrument for reducing deforestation?", o:["Logging restrictions", "Unregulated logging", "Slash-and-burn subsidies", "Open access"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"One of these is a policy instrument for reducing deforestation. Pick it.", o:["Logging restrictions", "Open access", "Unregulated logging", "Slash-and-burn subsidies"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of the following is a policy instrument for reducing deforestation?", o:["Certification schemes", "Open access", "Unregulated logging", "Slash-and-burn subsidies"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"One of these is a policy instrument for reducing deforestation. Pick it.", o:["Certification schemes", "Open access", "Slash-and-burn subsidies", "Unregulated logging"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of the following is a policy instrument for reducing deforestation?", o:["Carbon trading", "Slash-and-burn subsidies", "Open access", "Unregulated logging"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"One of these is a policy instrument for reducing deforestation. Pick it.", o:["Carbon trading", "Unregulated logging", "Slash-and-burn subsidies", "Open access"], a:0, exp:"Per your notes: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of these is NOT a policy instrument for reducing deforestation?", o:["Open access", "Zoning laws and protected areas", "REDD+", "Carbon trading"], a:0, exp:"Not in your notes under this heading. The valid ones are: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of these is NOT a policy instrument for reducing deforestation?", o:["Slash-and-burn subsidies", "Zoning laws and protected areas", "Payments for Ecosystem Services", "REDD+"], a:0, exp:"Not in your notes under this heading. The valid ones are: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of these is NOT a policy instrument for reducing deforestation?", o:["Unregulated logging", "Certification schemes", "Carbon trading", "REDD+"], a:0, exp:"Not in your notes under this heading. The valid ones are: Payments for Ecosystem Services, REDD+, Zoning laws and protected areas, Logging restrictions, Certification schemes, Carbon trading."},
+{t:"Land Use Economics", q:"Which of the following is a cost counted in the cost-benefit analysis of deforestation?", o:["Loss of ecosystem services", "Timber sales", "Agricultural income", "Infrastructure development"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"One of these is a cost counted in the cost-benefit analysis of deforestation. Pick it.", o:["Loss of ecosystem services", "Agricultural income", "Infrastructure development", "Employment"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of the following is a cost counted in the cost-benefit analysis of deforestation?", o:["Biodiversity loss", "Infrastructure development", "Timber sales", "Agricultural income"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"One of these is a cost counted in the cost-benefit analysis of deforestation. Pick it.", o:["Biodiversity loss", "Employment", "Agricultural income", "Timber sales"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of the following is a cost counted in the cost-benefit analysis of deforestation?", o:["CO2 emissions", "Infrastructure development", "Employment", "Agricultural income"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"One of these is a cost counted in the cost-benefit analysis of deforestation. Pick it.", o:["CO2 emissions", "Agricultural income", "Infrastructure development", "Timber sales"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of the following is a cost counted in the cost-benefit analysis of deforestation?", o:["Soil degradation", "Agricultural income", "Employment", "Infrastructure development"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"One of these is a cost counted in the cost-benefit analysis of deforestation. Pick it.", o:["Soil degradation", "Infrastructure development", "Employment", "Timber sales"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of the following is a cost counted in the cost-benefit analysis of deforestation?", o:["Flooding", "Timber sales", "Infrastructure development", "Agricultural income"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"One of these is a cost counted in the cost-benefit analysis of deforestation. Pick it.", o:["Flooding", "Timber sales", "Infrastructure development", "Employment"], a:0, exp:"Per your notes: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of these is NOT a cost counted in the cost-benefit analysis of deforestation?", o:["Timber sales", "Loss of ecosystem services", "Biodiversity loss", "Soil degradation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of these is NOT a cost counted in the cost-benefit analysis of deforestation?", o:["Agricultural income", "CO2 emissions", "Soil degradation", "Biodiversity loss"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of these is NOT a cost counted in the cost-benefit analysis of deforestation?", o:["Employment", "Biodiversity loss", "Flooding", "Soil degradation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of these is NOT a cost counted in the cost-benefit analysis of deforestation?", o:["Infrastructure development", "Biodiversity loss", "CO2 emissions", "Soil degradation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Biodiversity loss, CO2 emissions, Soil degradation, Flooding."},
+{t:"Land Use Economics", q:"Which of the following is a benefit counted in the cost-benefit analysis of deforestation?", o:["Timber sales", "CO2 emissions", "Loss of ecosystem services", "Biodiversity loss"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"One of these is a benefit counted in the cost-benefit analysis of deforestation. Pick it.", o:["Timber sales", "CO2 emissions", "Loss of ecosystem services", "Soil degradation"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of the following is a benefit counted in the cost-benefit analysis of deforestation?", o:["Agricultural income", "Soil degradation", "Biodiversity loss", "CO2 emissions"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"One of these is a benefit counted in the cost-benefit analysis of deforestation. Pick it.", o:["Agricultural income", "Biodiversity loss", "Loss of ecosystem services", "CO2 emissions"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of the following is a benefit counted in the cost-benefit analysis of deforestation?", o:["Infrastructure development", "Soil degradation", "Biodiversity loss", "Loss of ecosystem services"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"One of these is a benefit counted in the cost-benefit analysis of deforestation. Pick it.", o:["Infrastructure development", "Loss of ecosystem services", "Soil degradation", "Biodiversity loss"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of the following is a benefit counted in the cost-benefit analysis of deforestation?", o:["Employment", "Loss of ecosystem services", "CO2 emissions", "Biodiversity loss"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"One of these is a benefit counted in the cost-benefit analysis of deforestation. Pick it.", o:["Employment", "Biodiversity loss", "Soil degradation", "CO2 emissions"], a:0, exp:"Per your notes: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of these is NOT a benefit counted in the cost-benefit analysis of deforestation?", o:["Loss of ecosystem services", "Employment", "Infrastructure development", "Timber sales"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of these is NOT a benefit counted in the cost-benefit analysis of deforestation?", o:["Biodiversity loss", "Agricultural income", "Employment", "Timber sales"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of these is NOT a benefit counted in the cost-benefit analysis of deforestation?", o:["CO2 emissions", "Timber sales", "Infrastructure development", "Employment"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Land Use Economics", q:"Which of these is NOT a benefit counted in the cost-benefit analysis of deforestation?", o:["Soil degradation", "Employment", "Timber sales", "Agricultural income"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber sales, Agricultural income, Infrastructure development, Employment."},
+{t:"Valuation", q:"Which of the following is a direct consumptive use value of forests?", o:["Timber", "Recreation", "Bequest value", "Existence value"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"One of these is a direct consumptive use value of forests. Pick it.", o:["Timber", "Carbon sequestration", "Bequest value", "Existence value"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of the following is a direct consumptive use value of forests?", o:["Fuelwood", "Carbon sequestration", "Existence value", "Recreation"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"One of these is a direct consumptive use value of forests. Pick it.", o:["Fuelwood", "Existence value", "Carbon sequestration", "Bequest value"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of the following is a direct consumptive use value of forests?", o:["Fruits", "Recreation", "Bequest value", "Carbon sequestration"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"One of these is a direct consumptive use value of forests. Pick it.", o:["Fruits", "Bequest value", "Existence value", "Recreation"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of the following is a direct consumptive use value of forests?", o:["Nuts", "Recreation", "Carbon sequestration", "Existence value"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"One of these is a direct consumptive use value of forests. Pick it.", o:["Nuts", "Carbon sequestration", "Existence value", "Recreation"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of the following is a direct consumptive use value of forests?", o:["Medicinal plants", "Bequest value", "Carbon sequestration", "Recreation"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"One of these is a direct consumptive use value of forests. Pick it.", o:["Medicinal plants", "Recreation", "Carbon sequestration", "Bequest value"], a:0, exp:"Per your notes: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of these is NOT a direct consumptive use value of forests?", o:["Recreation", "Fruits", "Medicinal plants", "Nuts"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of these is NOT a direct consumptive use value of forests?", o:["Existence value", "Medicinal plants", "Fuelwood", "Nuts"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of these is NOT a direct consumptive use value of forests?", o:["Bequest value", "Medicinal plants", "Timber", "Nuts"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of these is NOT a direct consumptive use value of forests?", o:["Carbon sequestration", "Fuelwood", "Fruits", "Nuts"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Fruits, Nuts, Medicinal plants."},
+{t:"Valuation", q:"Which of the following is a direct non-consumptive use value of forests?", o:["Recreation", "Option value", "Fuelwood", "Timber"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"One of these is a direct non-consumptive use value of forests. Pick it.", o:["Recreation", "Option value", "Fuelwood", "Timber"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of the following is a direct non-consumptive use value of forests?", o:["Tourism", "Fuelwood", "Existence value", "Option value"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"One of these is a direct non-consumptive use value of forests. Pick it.", o:["Tourism", "Option value", "Fuelwood", "Timber"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of the following is a direct non-consumptive use value of forests?", o:["Education", "Existence value", "Timber", "Option value"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"One of these is a direct non-consumptive use value of forests. Pick it.", o:["Education", "Fuelwood", "Option value", "Existence value"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of the following is a direct non-consumptive use value of forests?", o:["Scientific research", "Existence value", "Option value", "Timber"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"One of these is a direct non-consumptive use value of forests. Pick it.", o:["Scientific research", "Fuelwood", "Timber", "Option value"], a:0, exp:"Per your notes: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of these is NOT a direct non-consumptive use value of forests?", o:["Timber", "Tourism", "Recreation", "Education"], a:0, exp:"Not in your notes under this heading. The valid ones are: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of these is NOT a direct non-consumptive use value of forests?", o:["Fuelwood", "Scientific research", "Tourism", "Recreation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of these is NOT a direct non-consumptive use value of forests?", o:["Existence value", "Scientific research", "Tourism", "Recreation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of these is NOT a direct non-consumptive use value of forests?", o:["Option value", "Education", "Tourism", "Scientific research"], a:0, exp:"Not in your notes under this heading. The valid ones are: Recreation, Tourism, Education, Scientific research."},
+{t:"Valuation", q:"Which of the following is a non-use value of forests?", o:["Existence value", "Timber value", "Fuelwood value", "Recreation value"], a:0, exp:"Per your notes: Existence value, Bequest value, Option value."},
+{t:"Valuation", q:"Which of the following is a non-use value of forests?", o:["Bequest value", "Fuelwood value", "Timber value", "Recreation value"], a:0, exp:"Per your notes: Existence value, Bequest value, Option value."},
+{t:"Valuation", q:"Which of the following is a non-use value of forests?", o:["Option value", "Timber value", "Fuelwood value", "Recreation value"], a:0, exp:"Per your notes: Existence value, Bequest value, Option value."},
+{t:"Valuation", q:"Which of these is NOT a non-use value of forests?", o:["Timber value", "Bequest value", "Existence value", "Option value"], a:0, exp:"Not in your notes under this heading. The valid ones are: Existence value, Bequest value, Option value."},
+{t:"Valuation", q:"Which of these is NOT a non-use value of forests?", o:["Fuelwood value", "Option value", "Existence value", "Bequest value"], a:0, exp:"Not in your notes under this heading. The valid ones are: Existence value, Bequest value, Option value."},
+{t:"Valuation", q:"Which of these is NOT a non-use value of forests?", o:["Recreation value", "Option value", "Existence value", "Bequest value"], a:0, exp:"Not in your notes under this heading. The valid ones are: Existence value, Bequest value, Option value."},
+{t:"Valuation", q:"Which of the following is an ecosystem service (indirect use value) of forests?", o:["Carbon sequestration", "Bequest value", "Timber sales", "Existence value"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"One of these is an ecosystem service (indirect use value) of forests. Pick it.", o:["Carbon sequestration", "Existence value", "Timber sales", "Fuelwood"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of the following is an ecosystem service (indirect use value) of forests?", o:["Climate regulation", "Bequest value", "Timber sales", "Fuelwood"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"One of these is an ecosystem service (indirect use value) of forests. Pick it.", o:["Climate regulation", "Timber sales", "Bequest value", "Existence value"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of the following is an ecosystem service (indirect use value) of forests?", o:["Water purification", "Fuelwood", "Timber sales", "Existence value"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"One of these is an ecosystem service (indirect use value) of forests. Pick it.", o:["Water purification", "Existence value", "Timber sales", "Fuelwood"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of the following is an ecosystem service (indirect use value) of forests?", o:["Soil conservation", "Timber sales", "Existence value", "Fuelwood"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"One of these is an ecosystem service (indirect use value) of forests. Pick it.", o:["Soil conservation", "Existence value", "Timber sales", "Bequest value"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of the following is an ecosystem service (indirect use value) of forests?", o:["Biodiversity support", "Existence value", "Timber sales", "Bequest value"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"One of these is an ecosystem service (indirect use value) of forests. Pick it.", o:["Biodiversity support", "Fuelwood", "Timber sales", "Bequest value"], a:0, exp:"Per your notes: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of these is NOT an ecosystem service (indirect use value) of forests?", o:["Timber sales", "Water purification", "Climate regulation", "Soil conservation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of these is NOT an ecosystem service (indirect use value) of forests?", o:["Fuelwood", "Carbon sequestration", "Climate regulation", "Soil conservation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of these is NOT an ecosystem service (indirect use value) of forests?", o:["Existence value", "Biodiversity support", "Soil conservation", "Climate regulation"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of these is NOT an ecosystem service (indirect use value) of forests?", o:["Bequest value", "Carbon sequestration", "Biodiversity support", "Water purification"], a:0, exp:"Not in your notes under this heading. The valid ones are: Carbon sequestration, Climate regulation, Water purification, Soil conservation, Biodiversity support."},
+{t:"Valuation", q:"Which of the following is a market-based valuation application?", o:["Timber", "Existence values", "National parks", "Urban forests"], a:0, exp:"Per your notes: Timber, Fuelwood, Non-timber forest products."},
+{t:"Valuation", q:"Which of the following is a market-based valuation application?", o:["Fuelwood", "Existence values", "Urban forests", "National parks"], a:0, exp:"Per your notes: Timber, Fuelwood, Non-timber forest products."},
+{t:"Valuation", q:"Which of the following is a market-based valuation application?", o:["Non-timber forest products", "Urban forests", "National parks", "Existence values"], a:0, exp:"Per your notes: Timber, Fuelwood, Non-timber forest products."},
+{t:"Valuation", q:"Which of these is NOT a market-based valuation application?", o:["National parks", "Non-timber forest products", "Fuelwood", "Timber"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Non-timber forest products."},
+{t:"Valuation", q:"Which of these is NOT a market-based valuation application?", o:["Existence values", "Timber", "Fuelwood", "Non-timber forest products"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Non-timber forest products."},
+{t:"Valuation", q:"Which of these is NOT a market-based valuation application?", o:["Urban forests", "Non-timber forest products", "Timber", "Fuelwood"], a:0, exp:"Not in your notes under this heading. The valid ones are: Timber, Fuelwood, Non-timber forest products."},
+{t:"Economic Impacts", q:"Which of the following is a short-term economic gain of deforestation?", o:["Immediate farmland for cash crops", "Increased disaster costs", "Loss of ecosystem services", "Climate damages"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"One of these is a short-term economic gain of deforestation. Pick it.", o:["Immediate farmland for cash crops", "Increased disaster costs", "Decline in tourism", "Loss of ecosystem services"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of the following is a short-term economic gain of deforestation?", o:["Quick timber revenue", "Loss of ecosystem services", "Climate damages", "Decline in tourism"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"One of these is a short-term economic gain of deforestation. Pick it.", o:["Quick timber revenue", "Decline in tourism", "Loss of ecosystem services", "Climate damages"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of the following is a short-term economic gain of deforestation?", o:["Mining and infrastructure access", "Loss of ecosystem services", "Increased disaster costs", "Climate damages"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"One of these is a short-term economic gain of deforestation. Pick it.", o:["Mining and infrastructure access", "Climate damages", "Increased disaster costs", "Loss of ecosystem services"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of the following is a short-term economic gain of deforestation?", o:["Short-lived jobs", "Climate damages", "Increased disaster costs", "Loss of ecosystem services"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"One of these is a short-term economic gain of deforestation. Pick it.", o:["Short-lived jobs", "Increased disaster costs", "Climate damages", "Loss of ecosystem services"], a:0, exp:"Per your notes: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of these is NOT a short-term economic gain of deforestation?", o:["Loss of ecosystem services", "Short-lived jobs", "Immediate farmland for cash crops", "Mining and infrastructure access"], a:0, exp:"Not in your notes under this heading. The valid ones are: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of these is NOT a short-term economic gain of deforestation?", o:["Climate damages", "Short-lived jobs", "Quick timber revenue", "Immediate farmland for cash crops"], a:0, exp:"Not in your notes under this heading. The valid ones are: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of these is NOT a short-term economic gain of deforestation?", o:["Decline in tourism", "Immediate farmland for cash crops", "Short-lived jobs", "Mining and infrastructure access"], a:0, exp:"Not in your notes under this heading. The valid ones are: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of these is NOT a short-term economic gain of deforestation?", o:["Increased disaster costs", "Mining and infrastructure access", "Immediate farmland for cash crops", "Short-lived jobs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Immediate farmland for cash crops, Quick timber revenue, Mining and infrastructure access, Short-lived jobs."},
+{t:"Economic Impacts", q:"Which of the following is a long-term economic cost of deforestation?", o:["Loss of ecosystem services", "Short-lived jobs", "Mining access", "Immediate farmland"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"One of these is a long-term economic cost of deforestation. Pick it.", o:["Loss of ecosystem services", "Mining access", "Short-lived jobs", "Quick timber revenue"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of the following is a long-term economic cost of deforestation?", o:["Climate change damages", "Quick timber revenue", "Mining access", "Short-lived jobs"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"One of these is a long-term economic cost of deforestation. Pick it.", o:["Climate change damages", "Mining access", "Quick timber revenue", "Immediate farmland"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of the following is a long-term economic cost of deforestation?", o:["Decline in tourism revenue", "Quick timber revenue", "Immediate farmland", "Short-lived jobs"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"One of these is a long-term economic cost of deforestation. Pick it.", o:["Decline in tourism revenue", "Quick timber revenue", "Mining access", "Short-lived jobs"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of the following is a long-term economic cost of deforestation?", o:["Decreased agricultural productivity", "Mining access", "Short-lived jobs", "Immediate farmland"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"One of these is a long-term economic cost of deforestation. Pick it.", o:["Decreased agricultural productivity", "Quick timber revenue", "Mining access", "Short-lived jobs"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of the following is a long-term economic cost of deforestation?", o:["Increased disaster costs", "Mining access", "Short-lived jobs", "Immediate farmland"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"One of these is a long-term economic cost of deforestation. Pick it.", o:["Increased disaster costs", "Mining access", "Immediate farmland", "Quick timber revenue"], a:0, exp:"Per your notes: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term economic cost of deforestation?", o:["Quick timber revenue", "Climate change damages", "Decline in tourism revenue", "Loss of ecosystem services"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term economic cost of deforestation?", o:["Immediate farmland", "Decline in tourism revenue", "Climate change damages", "Decreased agricultural productivity"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term economic cost of deforestation?", o:["Short-lived jobs", "Loss of ecosystem services", "Decline in tourism revenue", "Increased disaster costs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term economic cost of deforestation?", o:["Mining access", "Decreased agricultural productivity", "Increased disaster costs", "Loss of ecosystem services"], a:0, exp:"Not in your notes under this heading. The valid ones are: Loss of ecosystem services, Climate change damages, Decline in tourism revenue, Decreased agricultural productivity, Increased disaster costs."},
+{t:"Economic Impacts", q:"Which of the following is a long-term agricultural effect of deforestation?", o:["Soil erosion and nutrient loss", "Stable rainfall", "Higher groundwater recharge", "Improved soil fertility"], a:0, exp:"Per your notes: Soil erosion and nutrient loss, Pest outbreaks from loss of predators, Reduced rainfall from lower evapotranspiration."},
+{t:"Economic Impacts", q:"Which of the following is a long-term agricultural effect of deforestation?", o:["Pest outbreaks from loss of predators", "Stable rainfall", "Improved soil fertility", "Higher groundwater recharge"], a:0, exp:"Per your notes: Soil erosion and nutrient loss, Pest outbreaks from loss of predators, Reduced rainfall from lower evapotranspiration."},
+{t:"Economic Impacts", q:"Which of the following is a long-term agricultural effect of deforestation?", o:["Reduced rainfall from lower evapotranspiration", "Improved soil fertility", "Higher groundwater recharge", "Stable rainfall"], a:0, exp:"Per your notes: Soil erosion and nutrient loss, Pest outbreaks from loss of predators, Reduced rainfall from lower evapotranspiration."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term agricultural effect of deforestation?", o:["Higher groundwater recharge", "Pest outbreaks from loss of predators", "Soil erosion and nutrient loss", "Reduced rainfall from lower evapotranspiration"], a:0, exp:"Not in your notes under this heading. The valid ones are: Soil erosion and nutrient loss, Pest outbreaks from loss of predators, Reduced rainfall from lower evapotranspiration."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term agricultural effect of deforestation?", o:["Stable rainfall", "Reduced rainfall from lower evapotranspiration", "Pest outbreaks from loss of predators", "Soil erosion and nutrient loss"], a:0, exp:"Not in your notes under this heading. The valid ones are: Soil erosion and nutrient loss, Pest outbreaks from loss of predators, Reduced rainfall from lower evapotranspiration."},
+{t:"Economic Impacts", q:"Which of these is NOT a long-term agricultural effect of deforestation?", o:["Improved soil fertility", "Pest outbreaks from loss of predators", "Soil erosion and nutrient loss", "Reduced rainfall from lower evapotranspiration"], a:0, exp:"Not in your notes under this heading. The valid ones are: Soil erosion and nutrient loss, Pest outbreaks from loss of predators, Reduced rainfall from lower evapotranspiration."},
+{t:"Economic Impacts", q:"Which of the following is an effect of deforestation on water resources?", o:["Reduced water quality", "Reduced runoff", "Higher groundwater recharge", "Improved purification"], a:0, exp:"Per your notes: Reduced water quality, Water scarcity, Increased flooding."},
+{t:"Economic Impacts", q:"Which of the following is an effect of deforestation on water resources?", o:["Water scarcity", "Improved purification", "Reduced runoff", "Higher groundwater recharge"], a:0, exp:"Per your notes: Reduced water quality, Water scarcity, Increased flooding."},
+{t:"Economic Impacts", q:"Which of the following is an effect of deforestation on water resources?", o:["Increased flooding", "Improved purification", "Higher groundwater recharge", "Reduced runoff"], a:0, exp:"Per your notes: Reduced water quality, Water scarcity, Increased flooding."},
+{t:"Economic Impacts", q:"Which of these is NOT an effect of deforestation on water resources?", o:["Higher groundwater recharge", "Water scarcity", "Reduced water quality", "Increased flooding"], a:0, exp:"Not in your notes under this heading. The valid ones are: Reduced water quality, Water scarcity, Increased flooding."},
+{t:"Economic Impacts", q:"Which of these is NOT an effect of deforestation on water resources?", o:["Improved purification", "Reduced water quality", "Water scarcity", "Increased flooding"], a:0, exp:"Not in your notes under this heading. The valid ones are: Reduced water quality, Water scarcity, Increased flooding."},
+{t:"Economic Impacts", q:"Which of these is NOT an effect of deforestation on water resources?", o:["Reduced runoff", "Water scarcity", "Reduced water quality", "Increased flooding"], a:0, exp:"Not in your notes under this heading. The valid ones are: Reduced water quality, Water scarcity, Increased flooding."},
+{t:"Economic Impacts", q:"Which of the following is a policy recommendation in Week 6?", o:["Payment for ecosystem services", "Removing penalties", "Expanding logging concessions", "Clearing more farmland"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"One of these is a policy recommendation in Week 6. Pick it.", o:["Payment for ecosystem services", "Removing penalties", "Expanding logging concessions", "Clearing more farmland"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"Which of the following is a policy recommendation in Week 6?", o:["Agroforestry", "Expanding logging concessions", "Clearing more farmland", "Removing penalties"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"One of these is a policy recommendation in Week 6. Pick it.", o:["Agroforestry", "Removing penalties", "Clearing more farmland", "Expanding logging concessions"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"Which of the following is a policy recommendation in Week 6?", o:["Stronger enforcement against illegal logging", "Removing penalties", "Clearing more farmland", "Expanding logging concessions"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"One of these is a policy recommendation in Week 6. Pick it.", o:["Stronger enforcement against illegal logging", "Clearing more farmland", "Expanding logging concessions", "Removing penalties"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"Which of the following is a policy recommendation in Week 6?", o:["Eco-tourism development", "Expanding logging concessions", "Clearing more farmland", "Removing penalties"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"One of these is a policy recommendation in Week 6. Pick it.", o:["Eco-tourism development", "Expanding logging concessions", "Clearing more farmland", "Removing penalties"], a:0, exp:"Per your notes: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"Which of these is NOT a policy recommendation in Week 6?", o:["Expanding logging concessions", "Payment for ecosystem services", "Eco-tourism development", "Stronger enforcement against illegal logging"], a:0, exp:"Not in your notes under this heading. The valid ones are: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"Which of these is NOT a policy recommendation in Week 6?", o:["Removing penalties", "Agroforestry", "Eco-tourism development", "Payment for ecosystem services"], a:0, exp:"Not in your notes under this heading. The valid ones are: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Economic Impacts", q:"Which of these is NOT a policy recommendation in Week 6?", o:["Clearing more farmland", "Agroforestry", "Eco-tourism development", "Payment for ecosystem services"], a:0, exp:"Not in your notes under this heading. The valid ones are: Payment for ecosystem services, Agroforestry, Stronger enforcement against illegal logging, Eco-tourism development."},
+{t:"Ecological Impacts", q:"Which of the following is a mechanism through which deforestation causes biodiversity loss?", o:["Habitat destruction", "Habitat creation", "Increased pollination", "Soil binding"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"One of these is a mechanism through which deforestation causes biodiversity loss. Pick it.", o:["Habitat destruction", "Carbon storage", "Increased pollination", "Habitat creation"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of the following is a mechanism through which deforestation causes biodiversity loss?", o:["Habitat fragmentation", "Soil binding", "Habitat creation", "Increased pollination"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"One of these is a mechanism through which deforestation causes biodiversity loss. Pick it.", o:["Habitat fragmentation", "Increased pollination", "Habitat creation", "Carbon storage"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of the following is a mechanism through which deforestation causes biodiversity loss?", o:["Disruption of food chains", "Soil binding", "Habitat creation", "Carbon storage"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"One of these is a mechanism through which deforestation causes biodiversity loss. Pick it.", o:["Disruption of food chains", "Habitat creation", "Carbon storage", "Increased pollination"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of the following is a mechanism through which deforestation causes biodiversity loss?", o:["Invasive species spread", "Soil binding", "Increased pollination", "Carbon storage"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"One of these is a mechanism through which deforestation causes biodiversity loss. Pick it.", o:["Invasive species spread", "Soil binding", "Increased pollination", "Habitat creation"], a:0, exp:"Per your notes: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of these is NOT a mechanism through which deforestation causes biodiversity loss?", o:["Increased pollination", "Disruption of food chains", "Habitat fragmentation", "Habitat destruction"], a:0, exp:"Not in your notes under this heading. The valid ones are: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of these is NOT a mechanism through which deforestation causes biodiversity loss?", o:["Habitat creation", "Invasive species spread", "Habitat fragmentation", "Habitat destruction"], a:0, exp:"Not in your notes under this heading. The valid ones are: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of these is NOT a mechanism through which deforestation causes biodiversity loss?", o:["Carbon storage", "Invasive species spread", "Habitat destruction", "Disruption of food chains"], a:0, exp:"Not in your notes under this heading. The valid ones are: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of these is NOT a mechanism through which deforestation causes biodiversity loss?", o:["Soil binding", "Invasive species spread", "Habitat destruction", "Disruption of food chains"], a:0, exp:"Not in your notes under this heading. The valid ones are: Habitat destruction, Habitat fragmentation, Disruption of food chains, Invasive species spread."},
+{t:"Ecological Impacts", q:"Which of the following is a role of forests in preventing soil erosion?", o:["Roots bind the soil", "Cause sedimentation", "Increase runoff", "Wash away topsoil"], a:0, exp:"Per your notes: Roots bind the soil, Canopies reduce raindrop impact, Litter layers improve water infiltration."},
+{t:"Ecological Impacts", q:"Which of the following is a role of forests in preventing soil erosion?", o:["Canopies reduce raindrop impact", "Wash away topsoil", "Increase runoff", "Cause sedimentation"], a:0, exp:"Per your notes: Roots bind the soil, Canopies reduce raindrop impact, Litter layers improve water infiltration."},
+{t:"Ecological Impacts", q:"Which of the following is a role of forests in preventing soil erosion?", o:["Litter layers improve water infiltration", "Wash away topsoil", "Cause sedimentation", "Increase runoff"], a:0, exp:"Per your notes: Roots bind the soil, Canopies reduce raindrop impact, Litter layers improve water infiltration."},
+{t:"Ecological Impacts", q:"Which of these is NOT a role of forests in preventing soil erosion?", o:["Increase runoff", "Canopies reduce raindrop impact", "Roots bind the soil", "Litter layers improve water infiltration"], a:0, exp:"Not in your notes under this heading. The valid ones are: Roots bind the soil, Canopies reduce raindrop impact, Litter layers improve water infiltration."},
+{t:"Ecological Impacts", q:"Which of these is NOT a role of forests in preventing soil erosion?", o:["Wash away topsoil", "Canopies reduce raindrop impact", "Litter layers improve water infiltration", "Roots bind the soil"], a:0, exp:"Not in your notes under this heading. The valid ones are: Roots bind the soil, Canopies reduce raindrop impact, Litter layers improve water infiltration."},
+{t:"Ecological Impacts", q:"Which of these is NOT a role of forests in preventing soil erosion?", o:["Cause sedimentation", "Litter layers improve water infiltration", "Canopies reduce raindrop impact", "Roots bind the soil"], a:0, exp:"Not in your notes under this heading. The valid ones are: Roots bind the soil, Canopies reduce raindrop impact, Litter layers improve water infiltration."},
+{t:"Ecological Impacts", q:"Which of the following is an effect of deforestation on soil?", o:["Increased runoff and flooding", "Improved infiltration", "Higher fertility", "Increased soil binding"], a:0, exp:"Per your notes: Increased runoff and flooding, Loss of soil fertility, Sedimentation in rivers and reservoirs."},
+{t:"Ecological Impacts", q:"Which of the following is an effect of deforestation on soil?", o:["Loss of soil fertility", "Higher fertility", "Increased soil binding", "Improved infiltration"], a:0, exp:"Per your notes: Increased runoff and flooding, Loss of soil fertility, Sedimentation in rivers and reservoirs."},
+{t:"Ecological Impacts", q:"Which of the following is an effect of deforestation on soil?", o:["Sedimentation in rivers and reservoirs", "Higher fertility", "Improved infiltration", "Increased soil binding"], a:0, exp:"Per your notes: Increased runoff and flooding, Loss of soil fertility, Sedimentation in rivers and reservoirs."},
+{t:"Ecological Impacts", q:"Which of these is NOT an effect of deforestation on soil?", o:["Improved infiltration", "Sedimentation in rivers and reservoirs", "Loss of soil fertility", "Increased runoff and flooding"], a:0, exp:"Not in your notes under this heading. The valid ones are: Increased runoff and flooding, Loss of soil fertility, Sedimentation in rivers and reservoirs."},
+{t:"Ecological Impacts", q:"Which of these is NOT an effect of deforestation on soil?", o:["Increased soil binding", "Increased runoff and flooding", "Loss of soil fertility", "Sedimentation in rivers and reservoirs"], a:0, exp:"Not in your notes under this heading. The valid ones are: Increased runoff and flooding, Loss of soil fertility, Sedimentation in rivers and reservoirs."},
+{t:"Ecological Impacts", q:"Which of these is NOT an effect of deforestation on soil?", o:["Higher fertility", "Sedimentation in rivers and reservoirs", "Loss of soil fertility", "Increased runoff and flooding"], a:0, exp:"Not in your notes under this heading. The valid ones are: Increased runoff and flooding, Loss of soil fertility, Sedimentation in rivers and reservoirs."},
+{t:"Ecological Impacts", q:"Which of the following is a policy or mitigation measure in Week 7?", o:["Reforestation and afforestation", "Clear-cutting", "Unregulated logging", "Slash-and-burn expansion"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"One of these is a policy or mitigation measure in Week 7. Pick it.", o:["Reforestation and afforestation", "Unregulated logging", "Slash-and-burn expansion", "Clear-cutting"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of the following is a policy or mitigation measure in Week 7?", o:["Sustainable forest management", "Slash-and-burn expansion", "Clear-cutting", "Unregulated logging"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"One of these is a policy or mitigation measure in Week 7. Pick it.", o:["Sustainable forest management", "Slash-and-burn expansion", "Clear-cutting", "Unregulated logging"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of the following is a policy or mitigation measure in Week 7?", o:["Agroforestry", "Clear-cutting", "Unregulated logging", "Slash-and-burn expansion"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"One of these is a policy or mitigation measure in Week 7. Pick it.", o:["Agroforestry", "Slash-and-burn expansion", "Clear-cutting", "Unregulated logging"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of the following is a policy or mitigation measure in Week 7?", o:["Legal and regulatory frameworks", "Clear-cutting", "Unregulated logging", "Slash-and-burn expansion"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"One of these is a policy or mitigation measure in Week 7. Pick it.", o:["Legal and regulatory frameworks", "Unregulated logging", "Slash-and-burn expansion", "Clear-cutting"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of the following is a policy or mitigation measure in Week 7?", o:["Community-based conservation", "Unregulated logging", "Clear-cutting", "Slash-and-burn expansion"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"One of these is a policy or mitigation measure in Week 7. Pick it.", o:["Community-based conservation", "Slash-and-burn expansion", "Unregulated logging", "Clear-cutting"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of the following is a policy or mitigation measure in Week 7?", o:["REDD+", "Unregulated logging", "Clear-cutting", "Slash-and-burn expansion"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"One of these is a policy or mitigation measure in Week 7. Pick it.", o:["REDD+", "Unregulated logging", "Slash-and-burn expansion", "Clear-cutting"], a:0, exp:"Per your notes: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of these is NOT a policy or mitigation measure in Week 7?", o:["Clear-cutting", "Legal and regulatory frameworks", "Reforestation and afforestation", "Sustainable forest management"], a:0, exp:"Not in your notes under this heading. The valid ones are: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of these is NOT a policy or mitigation measure in Week 7?", o:["Unregulated logging", "Agroforestry", "Reforestation and afforestation", "Legal and regulatory frameworks"], a:0, exp:"Not in your notes under this heading. The valid ones are: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Ecological Impacts", q:"Which of these is NOT a policy or mitigation measure in Week 7?", o:["Slash-and-burn expansion", "Legal and regulatory frameworks", "Community-based conservation", "REDD+"], a:0, exp:"Not in your notes under this heading. The valid ones are: Reforestation and afforestation, Sustainable forest management, Agroforestry, Legal and regulatory frameworks, Community-based conservation, REDD+."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Inverted U-shape between income and degradation'?", o:["Environmental Kuznets Curve", "Tragedy of the Commons", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Framework: Environmental Kuznets Curve."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Rising phase, turning point and falling phase'?", o:["Environmental Kuznets Curve", "Tragedy of the Commons", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Framework: Environmental Kuznets Curve."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Degradation worsens first then improves as income rises'?", o:["Environmental Kuznets Curve", "Tragedy of the Commons", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Framework: Environmental Kuznets Curve."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Described by Garrett Hardin in 1968'?", o:["Tragedy of the Commons", "Environmental Kuznets Curve", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Framework: Tragedy of the Commons."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Individuals exploit a shared resource to depletion for self-interest'?", o:["Tragedy of the Commons", "Environmental Kuznets Curve", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Framework: Tragedy of the Commons."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Costs of overuse are shared while benefits are enjoyed individually'?", o:["Tragedy of the Commons", "Environmental Kuznets Curve", "Market failures and externalities", "Open access resource theory"], a:0, exp:"Framework: Tragedy of the Commons."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Costs and benefits not reflected in the price of land'?", o:["Market failures and externalities", "Environmental Kuznets Curve", "Tragedy of the Commons", "Open access resource theory"], a:0, exp:"Framework: Market failures and externalities."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Solved by carbon taxes and PES'?", o:["Market failures and externalities", "Environmental Kuznets Curve", "Tragedy of the Commons", "Open access resource theory"], a:0, exp:"Framework: Market failures and externalities."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Negative externalities lead to more forest cleared than socially optimal'?", o:["Market failures and externalities", "Environmental Kuznets Curve", "Tragedy of the Commons", "Open access resource theory"], a:0, exp:"Framework: Market failures and externalities."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Resources owned by no one and freely accessible'?", o:["Open access resource theory", "Environmental Kuznets Curve", "Tragedy of the Commons", "Market failures and externalities"], a:0, exp:"Framework: Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Property rights and community-based management are the solution'?", o:["Open access resource theory", "Environmental Kuznets Curve", "Tragedy of the Commons", "Market failures and externalities"], a:0, exp:"Framework: Open access resource theory."},
+{t:"Theoretical Frameworks", q:"Which framework does this describe: 'Lack of ownership encourages overexploitation'?", o:["Open access resource theory", "Environmental Kuznets Curve", "Tragedy of the Commons", "Market failures and externalities"], a:0, exp:"Framework: Open access resource theory."},
+{t:"Valuation", q:"Which valuation method matches: 'Uses actual market prices of goods like timber'?", o:["Market pricing method", "Travel cost method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Market pricing method."},
+{t:"Valuation", q:"Which valuation method matches: 'Excludes non-market benefits such as biodiversity'?", o:["Market pricing method", "Travel cost method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Market pricing method."},
+{t:"Valuation", q:"Which valuation method matches: 'Simple, widely accepted, based on observable data'?", o:["Market pricing method", "Travel cost method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Market pricing method."},
+{t:"Valuation", q:"Which valuation method matches: 'Observes visitors' travel expenses and time'?", o:["Travel cost method", "Market pricing method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Travel cost method."},
+{t:"Valuation", q:"Which valuation method matches: 'Based on revealed preferences for recreation'?", o:["Travel cost method", "Market pricing method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Travel cost method."},
+{t:"Valuation", q:"Which valuation method matches: 'Used for national parks and ecotourism sites'?", o:["Travel cost method", "Market pricing method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Travel cost method."},
+{t:"Valuation", q:"Which valuation method matches: 'Cannot capture non-use values; hard to isolate forest-only trips'?", o:["Travel cost method", "Market pricing method", "Contingent valuation method", "Hedonic pricing method"], a:0, exp:"Method: Travel cost method."},
+{t:"Valuation", q:"Which valuation method matches: 'Survey asking willingness to pay or accept'?", o:["Contingent valuation method", "Market pricing method", "Travel cost method", "Hedonic pricing method"], a:0, exp:"Method: Contingent valuation method."},
+{t:"Valuation", q:"Which valuation method matches: 'Captures both use and non-use values'?", o:["Contingent valuation method", "Market pricing method", "Travel cost method", "Hedonic pricing method"], a:0, exp:"Method: Contingent valuation method."},
+{t:"Valuation", q:"Which valuation method matches: 'Subject to hypothetical and strategic bias'?", o:["Contingent valuation method", "Market pricing method", "Travel cost method", "Hedonic pricing method"], a:0, exp:"Method: Contingent valuation method."},
+{t:"Valuation", q:"Which valuation method matches: 'Used for existence and bequest values'?", o:["Contingent valuation method", "Market pricing method", "Travel cost method", "Hedonic pricing method"], a:0, exp:"Method: Contingent valuation method."},
+{t:"Valuation", q:"Which valuation method matches: 'Uses property price differences near forests'?", o:["Hedonic pricing method", "Market pricing method", "Travel cost method", "Contingent valuation method"], a:0, exp:"Method: Hedonic pricing method."},
+{t:"Valuation", q:"Which valuation method matches: 'Limited to areas with active property markets'?", o:["Hedonic pricing method", "Market pricing method", "Travel cost method", "Contingent valuation method"], a:0, exp:"Method: Hedonic pricing method."},
+{t:"Valuation", q:"Which valuation method matches: 'Used for urban forests and green belts'?", o:["Hedonic pricing method", "Market pricing method", "Travel cost method", "Contingent valuation method"], a:0, exp:"Method: Hedonic pricing method."},
+{t:"Land Use Economics", q:"Which model fits: 'Land use varies with distance from a central market'?", o:["Von Thunen model", "Faustmann model", "Land rent theory", "Real options approach"], a:0, exp:"Model: Von Thunen model."},
+{t:"Land Use Economics", q:"Which model fits: 'Land near cities is used more intensively'?", o:["Von Thunen model", "Faustmann model", "Land rent theory", "Real options approach"], a:0, exp:"Model: Von Thunen model."},
+{t:"Land Use Economics", q:"Which model fits: 'Present value of expected future forest income'?", o:["Faustmann model", "Von Thunen model", "Land rent theory", "Real options approach"], a:0, exp:"Model: Faustmann model."},
+{t:"Land Use Economics", q:"Which model fits: 'Forest cut when NPV of cutting exceeds NPV of conserving'?", o:["Faustmann model", "Von Thunen model", "Land rent theory", "Real options approach"], a:0, exp:"Model: Faustmann model."},
+{t:"Land Use Economics", q:"Which model fits: 'Informs timber harvesting and replanting cycles'?", o:["Faustmann model", "Von Thunen model", "Land rent theory", "Real options approach"], a:0, exp:"Model: Faustmann model."},
+{t:"Land Use Economics", q:"Which model fits: 'Land goes to the use with the highest return'?", o:["Land rent theory", "Von Thunen model", "Faustmann model", "Real options approach"], a:0, exp:"Model: Land rent theory."},
+{t:"Land Use Economics", q:"Which model fits: 'Deforestation is rational if agriculture pays more than forest, unless regulated'?", o:["Land rent theory", "Von Thunen model", "Faustmann model", "Real options approach"], a:0, exp:"Model: Land rent theory."},
+{t:"Land Use Economics", q:"Which model fits: 'Recognises uncertainty and favours delaying deforestation'?", o:["Real options approach", "Von Thunen model", "Faustmann model", "Land rent theory"], a:0, exp:"Model: Real options approach."},
+{t:"Land Use Economics", q:"Which model fits: 'Linked to carbon credits, tourism and REDD+ payments'?", o:["Real options approach", "Von Thunen model", "Faustmann model", "Land rent theory"], a:0, exp:"Model: Real options approach."},
+{t:"Causes", q:"Which country or region matches: 'Trans-Amazonian Highway'?", o:["Brazil", "Indonesia", "Nigeria", "Ghana"], a:0, exp:"Answer: Brazil."},
+{t:"Causes", q:"Which country or region matches: 'Amazon cleared for soy and cattle grazing'?", o:["Brazil", "Indonesia", "Nigeria", "Ghana"], a:0, exp:"Answer: Brazil."},
+{t:"Causes", q:"Which country or region matches: 'Amazon tipping point warning'?", o:["Brazil", "Indonesia", "Nigeria", "Ghana"], a:0, exp:"Answer: Brazil."},
+{t:"Causes", q:"Which country or region matches: 'Palm oil plantations on converted forest, over $20 billion in exports'?", o:["Indonesia", "Brazil", "Nigeria", "Ghana"], a:0, exp:"Answer: Indonesia."},
+{t:"Causes", q:"Which country or region matches: 'Peatland destruction causing haze pollution'?", o:["Indonesia", "Brazil", "Nigeria", "Ghana"], a:0, exp:"Answer: Indonesia."},
+{t:"Causes", q:"Which country or region matches: 'Cross River State logging and farming'?", o:["Nigeria", "Brazil", "Indonesia", "Ghana"], a:0, exp:"Answer: Nigeria."},
+{t:"Causes", q:"Which country or region matches: 'Lagos and Abuja encroaching on forest reserves'?", o:["Nigeria", "Brazil", "Indonesia", "Ghana"], a:0, exp:"Answer: Nigeria."},
+{t:"Causes", q:"Which country or region matches: 'Congo Basin legal and illegal logging'?", o:["Central Africa (Congo Basin)", "Brazil", "Indonesia", "Nigeria"], a:0, exp:"Answer: Central Africa (Congo Basin)."},
+{t:"Introduction", q:"A forest is best defined as:", o:["A large area covered chiefly with trees and undergrowth, forming a complex ecosystem", "A single-species plantation of timber trees", "Any land owned by government", "A cleared area awaiting farming"], a:0, exp:"Week 1 definition."},
+{t:"Introduction", q:"Deforestation is:", o:["The permanent removal of forest cover to convert land to non-forest uses", "Temporary thinning of trees", "Planting trees on bare land", "Replanting trees on cleared land"], a:0, exp:"Permanent removal for agriculture, urban development, logging or mining."},
+{t:"Introduction", q:"Afforestation means:", o:["Planting trees on land not previously forested", "Replanting trees on deforested land", "Reduction in forest quality", "Permanent removal of forest cover"], a:0, exp:"Afforestation = new forest where none was; reforestation = replanting where forest was removed."},
+{t:"Introduction", q:"Reforestation means:", o:["Replanting trees on deforested land", "Planting trees on land not previously forested", "Loss of total forest area", "Reduction in biodiversity"], a:0, exp:"Reforestation = replanting on deforested land."},
+{t:"Introduction", q:"Forest degradation refers to:", o:["Reduction in forest quality, productivity and biodiversity due to human activities", "The total loss of forest area", "Planting of new forest", "Increase in carbon storage"], a:0, exp:"Degradation = quality loss; depletion = area/stock loss."},
+{t:"Introduction", q:"Forest depletion refers to:", o:["Reduction in total forest area and stock of forest resources", "Loss of quality only", "Planting new trees", "Growth of biodiversity"], a:0, exp:"Depletion is the outcome of prolonged deforestation and degradation."},
+{t:"Introduction", q:"Slash-and-burn is an example of which temporal scope of deforestation?", o:["Short-term", "Long-term", "Permanent", "Seasonal only"], a:0, exp:"Slash-and-burn = short-term; large-scale agriculture/urbanisation = long-term."},
+{t:"Introduction", q:"Deforestation is most pronounced in:", o:["Tropical developing countries", "Temperate developed countries", "Boreal Arctic regions", "Deserts"], a:0, exp:"Geographical scope in Week 1."},
+{t:"Introduction", q:"Which forest type lies near the equator and is hot and humid all year?", o:["Tropical rainforest", "Temperate forest", "Boreal forest", "Montane forest"], a:0, exp:"Examples: Amazon, Congo Basin, Southeast Asia."},
+{t:"Introduction", q:"Which forest type has four distinct seasons?", o:["Temperate forest", "Tropical rainforest", "Boreal/Taiga forest", "Mangrove forest"], a:0, exp:"Temperate forests: mid-latitudes, deciduous or evergreen."},
+{t:"Introduction", q:"Which forest is mostly coniferous with a cold climate and short growing season?", o:["Boreal (Taiga)", "Tropical rainforest", "Mangrove", "Temperate"], a:0, exp:"Found in Canada, Russia, Scandinavia."},
+{t:"Introduction", q:"Which forest protects coasts against erosion and flooding?", o:["Mangrove forest", "Montane forest", "Boreal forest", "Temperate forest"], a:0, exp:"Mangroves: tropical and subtropical coasts."},
+{t:"Introduction", q:"Which forest shows vertical stratification based on elevation?", o:["Montane forest", "Mangrove forest", "Taiga", "Tropical rainforest"], a:0, exp:"Montane = mountainous regions."},
+{t:"Introduction", q:"NTFP stands for:", o:["Non-timber forest products", "National tropical forest policy", "Net timber forest profit", "Natural tree forest plan"], a:0, exp:"Resins, fruits, herbs, oils, honey."},
+{t:"Introduction", q:"Ecotourism is described as a major source of:", o:["Foreign exchange in some countries", "Timber supply", "Soil erosion", "Illegal logging"], a:0, exp:"Forest importance: tourism and recreation."},
+{t:"Introduction", q:"FAO (2020) said the world lost approximately how much forest since 1990?", o:["420 million hectares", "42 million hectares", "10 million hectares", "4.2 billion hectares"], a:0, exp:"Mostly in Africa and South America."},
+{t:"Introduction", q:"Per Week 1, Nigeria loses over how many hectares of forest annually?", o:["350,000", "35,000", "3.5 million", "35 million"], a:0, exp:"Week 1: over 350,000 ha annually."},
+{t:"Causes", q:"Insecure land tenure encourages forest clearing as a way to:", o:["Claim ownership", "Reduce taxes", "Increase rainfall", "Create reserves"], a:0, exp:"Week 2 economic rationale for agriculture."},
+{t:"Causes", q:"Illegal logging is rampant mainly because of:", o:["Weak regulations and corruption", "Strong enforcement", "Low timber prices", "Abundant alternatives"], a:0, exp:"Challenge listed in Week 2."},
+{t:"Causes", q:"Which countries are named as major timber exporters contributing to rainforest loss?", o:["Indonesia and Malaysia", "Canada and Russia", "Egypt and Libya", "Norway and Sweden"], a:0, exp:"Week 2 examples."},
+{t:"Causes", q:"The Trans-Amazonian Highway is an example of deforestation driven by:", o:["Infrastructure development", "Mining", "Logging only", "Urbanization"], a:0, exp:"It opened vast areas of the Amazon in Brazil."},
+{t:"Causes", q:"Infrastructure causes secondary deforestation because it:", o:["Allows access for loggers, miners and farmers", "Plants new forests", "Reduces population", "Blocks trade"], a:0, exp:"Trade-off in Week 2."},
+{t:"Causes", q:"Artisanal gold mining causing severe deforestation was cited in:", o:["Ghana and Nigeria", "Brazil and Peru", "Canada and Russia", "Kenya and Egypt"], a:0, exp:"Week 2 mining example."},
+{t:"Causes", q:"Urban expansion encroaching on forest reserves and green belts was cited in:", o:["Lagos and Abuja", "Kano and Kaduna", "Accra and Kumasi", "Nairobi and Mombasa"], a:0, exp:"Week 2 urbanization example."},
+{t:"Theoretical Frameworks", q:"The Tragedy of the Commons was first described by:", o:["Garrett Hardin (1968)", "Simon Kuznets (1955)", "Adam Smith (1776)", "Ronald Coase (1960)"], a:0, exp:"Hardin, 1968."},
+{t:"Theoretical Frameworks", q:"The EKC is depicted as which shape?", o:["Inverted U", "U", "Straight upward line", "S-curve"], a:0, exp:"Degradation rises, peaks, then falls with income."},
+{t:"Theoretical Frameworks", q:"On the EKC, environmental degradation is highest at the:", o:["Turning point", "Beginning", "End", "Origin"], a:0, exp:"The peak is the turning point."},
+{t:"Theoretical Frameworks", q:"The EKC relates environmental degradation to:", o:["Income per capita", "Population density", "Rainfall", "Interest rates"], a:0, exp:"X-axis: income per capita."},
+{t:"Theoretical Frameworks", q:"A key critique of the EKC is that it:", o:["Ignores globalization where rich countries consume goods from deforested land", "Is too complex", "Has too few variables", "Proves growth always harms nature"], a:0, exp:"EKC may not apply to tropical deforestation driven by external demand."},
+{t:"Theoretical Frameworks", q:"In market failure, negative externalities are:", o:["Costs not reflected in the market price", "Costs paid fully by the polluter", "Benefits to the producer", "Government taxes"], a:0, exp:"Unaccounted costs falling on third parties."},
+{t:"Theoretical Frameworks", q:"Which policy internalises externalities?", o:["Carbon taxes", "Free access", "Higher logging quotas", "Removing protected areas"], a:0, exp:"Also forest conservation subsidies and PES."},
+{t:"Theoretical Frameworks", q:"An open access resource is one that:", o:["Is owned by no one and freely accessible to all", "Is privately owned", "Is owned by the state only", "Is traded on markets"], a:0, exp:"Examples: forests, fisheries, water bodies."},
+{t:"Theoretical Frameworks", q:"A solution to open access deforestation is:", o:["Property rights or community-based management", "Removing regulations", "Increasing subsidies for clearing", "Doubling logging"], a:0, exp:"Also protected areas and certification."},
+{t:"Theoretical Frameworks", q:"In the Tragedy of the Commons, costs of overuse are:", o:["Shared by everyone while benefits go to the individual", "Paid by the individual", "Zero", "Paid only by government"], a:0, exp:"Why individuals overexploit."},
+{t:"Land Use Economics", q:"Opportunity cost is:", o:["The value of the best alternative forgone", "The money spent", "The total cost", "The profit made"], a:0, exp:"Definition from Week 4."},
+{t:"Land Use Economics", q:"When forest is converted to farmland, the opportunity cost is:", o:["The ecosystem services lost", "The crops grown", "The seed cost", "The labour cost"], a:0, exp:"Carbon, biodiversity and water regulation lost."},
+{t:"Land Use Economics", q:"The opportunity cost of preserving forest is:", o:["Potential income from logging, agriculture or infrastructure", "Ecosystem services gained", "Carbon stored", "Biodiversity"], a:0, exp:"Conservation forgoes development income."},
+{t:"Land Use Economics", q:"In the Faustmann model, a forest is cut when:", o:["NPV of cutting exceeds NPV of conservation", "NPV of conservation exceeds cutting", "Timber prices are zero", "The forest is oldest"], a:0, exp:"Faustmann = present value of future forest income."},
+{t:"Land Use Economics", q:"High discount rates tend to favour:", o:["Short-term exploitation (deforestation)", "Conservation", "Reforestation", "Zero harvesting"], a:0, exp:"Low rates favour conservation."},
+{t:"Land Use Economics", q:"REDD+ is:", o:["A UN initiative giving incentives for reducing emissions from deforestation and degradation", "A timber trade tax", "A land tenure law", "A dam project"], a:0, exp:"REDD+ payments also tie to real options."},
+{t:"Land Use Economics", q:"In PES, farmers are:", o:["Compensated for preserving forests", "Fined for farming", "Taxed on land", "Given free timber"], a:0, exp:"Payments for Ecosystem Services."},
+{t:"Land Use Economics", q:"FSC is an example of a:", o:["Certification scheme", "Zoning law", "Tax", "Subsidy"], a:0, exp:"Market mechanism along with carbon trading."},
+{t:"Land Use Economics", q:"In the Nigerian cassava example, a hectare yields \u20a6500,000 but ecosystem services are valued at:", o:["\u20a6700,000 per year", "\u20a6300,000 per year", "\u20a6500,000 per year", "\u20a61,000,000 per year"], a:0, exp:"So long-term preserving the forest is preferable."},
+{t:"Land Use Economics", q:"Under land rent theory, deforestation is economically rational when:", o:["Agriculture yields higher income than forest cover", "Forest yields higher income", "Land is untaxed", "Prices fall"], a:0, exp:"Unless regulated."},
+{t:"Land Use Economics", q:"The von Thunen model says land closer to urban centres is:", o:["Used more intensively", "Used less intensively", "Left as forest", "Free"], a:0, exp:"Land use varies with distance from the central market."},
+{t:"Land Use Economics", q:"The real options approach encourages:", o:["Delaying deforestation to keep future options open", "Immediate clearing", "Ignoring uncertainty", "Selling forest"], a:0, exp:"Considers carbon credits, tourism and REDD+ payments."},
+{t:"Valuation", q:"Total economic value (TEV) of a forest combines:", o:["Market and non-market, use and non-use values", "Only timber value", "Only tourism value", "Only carbon value"], a:0, exp:"Combining techniques gives the best picture of TEV."},
+{t:"Valuation", q:"Fuelwood and medicinal plants are:", o:["Direct consumptive use values", "Non-consumptive use values", "Indirect use values", "Existence values"], a:0, exp:"Timber, fuelwood, fruits, nuts, medicinal plants."},
+{t:"Valuation", q:"Recreation, tourism and scientific research are:", o:["Direct non-consumptive use values", "Consumptive use values", "Bequest values", "Option values"], a:0, exp:"Non-consumptive direct use."},
+{t:"Valuation", q:"Preserving a forest for future generations is:", o:["Bequest value", "Existence value", "Option value", "Market value"], a:0, exp:"Bequest = for future generations."},
+{t:"Valuation", q:"Value of knowing a forest exists even if never used is:", o:["Existence value", "Bequest value", "Option value", "Direct use value"], a:0, exp:"Existence value."},
+{t:"Valuation", q:"Keeping open the chance to use undiscovered medicinal plants is:", o:["Option value", "Existence value", "Bequest value", "Market value"], a:0, exp:"Option value."},
+{t:"Valuation", q:"Carbon sequestration and water purification are:", o:["Indirect use values", "Direct use values", "Existence values", "Option values"], a:0, exp:"Ecosystem services."},
+{t:"Valuation", q:"Which valuation method captures BOTH use and non-use values?", o:["Contingent valuation", "Market pricing", "Travel cost", "Hedonic pricing"], a:0, exp:"CVM via hypothetical surveys."},
+{t:"Valuation", q:"WTP in contingent valuation stands for:", o:["Willingness to pay", "Wages to produce", "Waste treatment plan", "Wealth transfer policy"], a:0, exp:"Also WTA = willingness to accept."},
+{t:"Economic Impacts", q:"Palm oil in Indonesia supports over how many jobs?", o:["4 million", "40 million", "400,000", "14 million"], a:0, exp:"Also over $20 billion in exports."},
+{t:"Economic Impacts", q:"The World Bank says environmental degradation can cost up to what share of GDP in some developing countries?", o:["10%", "1%", "50%", "25%"], a:0, exp:"Week 6 economic note."},
+{t:"Economic Impacts", q:"The Amazon tipping point refers to:", o:["Savannah-like conditions from lost rainfall", "Rise of sea level", "Growth of cattle farming", "Increase in carbon sink"], a:0, exp:"Brazil case study."},
+{t:"Economic Impacts", q:"Cross River State in Nigeria was cited for:", o:["Logging and agricultural expansion", "Oil spills", "Gold mining", "Cocoa export"], a:0, exp:"Quick returns, long-term floods and desertification."},
+{t:"Economic Impacts", q:"Natural capital accounting means:", o:["Incorporating forest resources into GDP calculations", "Counting only timber", "Measuring wages", "Taxing forests"], a:0, exp:"Week 6 economic framework."},
+{t:"Economic Impacts", q:"Sustainable yield models determine:", o:["Harvest levels that do not compromise future benefits", "Maximum timber profit", "Cost of roads", "Tax rates"], a:0, exp:"Sustainable yield."},
+{t:"Ecological Impacts", q:"Forest ecosystems are home to more than what share of terrestrial species?", o:["80%", "20%", "50%", "10%"], a:0, exp:"Week 7."},
+{t:"Ecological Impacts", q:"The Amazon is home to about what share of known species?", o:["10%", "50%", "1%", "30%"], a:0, exp:"Week 7."},
+{t:"Ecological Impacts", q:"Nigeria's forest cover fell from about 17% in 1990 to:", o:["Less than 7% in 2020", "12% in 2020", "About 10% in 2020", "Over 20%"], a:0, exp:"Week 7 figure (note Week 4 table says 9.9%)."},
+{t:"Ecological Impacts", q:"The Cross River gorilla and drill monkeys are found in:", o:["Nigeria's Cross River rainforest", "The Amazon", "Congo Basin", "Borneo"], a:0, exp:"Both threatened by logging."},
+{t:"Ecological Impacts", q:"Tropical forests hold about how much carbon?", o:["250 billion tonnes", "25 billion tonnes", "2.5 billion tonnes", "2,500 billion tonnes"], a:0, exp:"More than 30 years of fossil fuel emissions."},
+{t:"Ecological Impacts", q:"Deforestation accounts for about what share of global greenhouse gas emissions (IPCC 2019)?", o:["10\u201315%", "1\u20132%", "40\u201350%", "75%"], a:0, exp:"Week 7."},
+{t:"Ecological Impacts", q:"Reduced evapotranspiration after deforestation tends to:", o:["Lower local rainfall", "Raise rainfall", "Increase biodiversity", "Stop erosion"], a:0, exp:"Regional climate effect."},
+{t:"Ecological Impacts", q:"Albedo refers to:", o:["Reflectivity of the surface", "Soil depth", "Rainfall", "Tree height"], a:0, exp:"Altered albedo affects heat absorption."},
+{t:"Ecological Impacts", q:"Habitat fragmentation increases extinction risk by:", o:["Reducing genetic exchange between populations", "Increasing food", "Adding pollinators", "Increasing habitat"], a:0, exp:"Isolated patches."},
+{t:"Ecological Impacts", q:"Which layer of the forest floor improves water infiltration?", o:["Litter (fallen leaves)", "Bare rock", "Sand", "Clay"], a:0, exp:"Roots bind soil; canopies reduce raindrop impact."},
+{t:"Ecological Impacts", q:"Desertification is linked in far-north Nigeria partly to removal of:", o:["Shelterbelt forests", "Mangroves", "Cash crops", "Dams"], a:0, exp:"Week 7 example."},
+{t:"Ecological Impacts", q:"Clearing of mangroves in the Niger Delta mainly releases carbon and:", o:["Undermines coastal protection", "Improves fisheries", "Increases rainfall", "Reduces floods"], a:0, exp:"Week 7 example."},
+];
+
+/* ===================== STATE ===================== */
+let config = { count: null, timePerQ: 45 };
+let quiz = { order: [], idx: 0, answers: [], timer: null, secondsLeft: 0, startedAt: 0, totalSecondsUsed: 0 };
+
+/* ===================== SETUP SCREEN ===================== */
+const bankSizeEl = document.getElementById('bank-size');
+bankSizeEl.textContent = BANK.length;
+
+const countPresets = [10, 20, 30, 50, 75, 100, 150, BANK.length];
+const countChipsEl = document.getElementById('count-chips');
+[...new Set(countPresets)].filter(n => n <= BANK.length).forEach(n => {
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.textContent = n;
+  b.dataset.n = n;
+  b.onclick = () => selectCount(n, b);
+  countChipsEl.appendChild(b);
+});
+
+function selectCount(n, chipEl){
+  config.count = n;
+  document.querySelectorAll('#count-chips .chip').forEach(c => c.classList.remove('active'));
+  if (chipEl) chipEl.classList.add('active');
+  document.getElementById('custom-count').value = '';
+  updateStartBtn();
+}
+
+document.getElementById('custom-count').addEventListener('input', (e) => {
+  let v = parseInt(e.target.value);
+  if (v && v > 0){
+    v = Math.min(v, BANK.length);
+    config.count = v;
+    document.querySelectorAll('#count-chips .chip').forEach(c => c.classList.remove('active'));
+    updateStartBtn();
+  } else {
+    config.count = null;
+    updateStartBtn();
+  }
+});
+
+document.querySelectorAll('#time-chips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#time-chips .chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    config.timePerQ = parseInt(chip.dataset.t);
+  });
+});
+
+function updateStartBtn(){
+  const btn = document.getElementById('start-btn');
+  if (config.count && config.count > 0){
+    btn.disabled = false;
+    btn.textContent = `Start · ${config.count} question${config.count>1?'s':''}`;
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Select a question count to begin';
+  }
+}
+
+document.getElementById('start-btn').addEventListener('click', startQuiz);
+
+/* ===================== QUIZ LOGIC ===================== */
+function shuffle(arr){
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz(){
+  quiz.order = shuffle([...BANK.keys()]).slice(0, config.count);
+  quiz.idx = 0;
+  quiz.answers = [];
+  quiz.totalSecondsUsed = 0;
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const qi = quiz.order[quiz.idx];
+  const item = BANK[qi];
+
+  document.getElementById('q-count').textContent = `Question ${quiz.idx + 1} / ${quiz.order.length}`;
+  document.getElementById('topic-tag').textContent = item.t;
+  document.getElementById('question-text').textContent = item.q;
+
+  // route progress (4 stages mapped to caravan journey)
+  const pct = (quiz.idx / Math.max(1, quiz.order.length - 1)) * 100;
+  document.getElementById('route-fill').style.width = pct + '%';
+  document.getElementById('camel').style.left = pct + '%';
+  const stageIdx = Math.min(3, Math.floor((quiz.idx / quiz.order.length) * 4));
+  for (let s = 0; s < 4; s++){
+    document.getElementById('stage' + s).classList.toggle('done', s <= stageIdx);
+  }
+
+  // shuffle option display order so correct answer position is randomized
+  quiz.currentShuffle = shuffle([0, 1, 2, 3]);
+
+  const optWrap = document.getElementById('options');
+  optWrap.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  quiz.currentShuffle.forEach((origIdx, displayIdx) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="letter">${letters[displayIdx]}</span><span>${item.o[origIdx]}</span>`;
+    div.onclick = () => selectAnswer(origIdx, div);
+    optWrap.appendChild(div);
+  });
+
+  document.getElementById('next-btn').disabled = true;
+  document.getElementById('next-btn').textContent = 'Answer to continue';
+  document.getElementById('next-btn').onclick = null;
+
+  startTimer();
+}
+
+let answered = false;
+
+function startTimer(){
+  clearInterval(quiz.timer);
+  answered = false;
+  quiz.startedAt = Date.now();
+  const timerEl = document.getElementById('timer');
+
+  if (config.timePerQ === 0){
+    timerEl.textContent = '∞';
+    timerEl.classList.remove('low');
+    return;
+  }
+
+  quiz.secondsLeft = config.timePerQ;
+  timerEl.textContent = formatTime(quiz.secondsLeft);
+  timerEl.classList.remove('low');
+
+  quiz.timer = setInterval(() => {
+    quiz.secondsLeft--;
+    timerEl.textContent = formatTime(quiz.secondsLeft);
+    if (quiz.secondsLeft <= 10) timerEl.classList.add('low');
+    if (quiz.secondsLeft <= 0){
+      clearInterval(quiz.timer);
+      if (!answered) timeUp();
+    }
+  }, 1000);
+}
+
+function formatTime(s){
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+function timeUp(){
+  answered = true;
+  const item = BANK[quiz.order[quiz.idx]];
+  quiz.answers.push({ qi: quiz.order[quiz.idx], chosen: null, correct: false, timedOut: true });
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((o, displayIdx) => {
+    o.classList.add('disabled');
+    if (quiz.currentShuffle[displayIdx] === item.a) o.classList.add('correct');
+  });
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = quiz.idx === quiz.order.length - 1 ? 'See results' : 'Next question';
+  nextBtn.onclick = goNext;
+}
+
+function selectAnswer(oi, el){
+  if (answered) return;
+  answered = true;
+  clearInterval(quiz.timer);
+
+  const timeTaken = config.timePerQ === 0 ? 0 : (config.timePerQ - quiz.secondsLeft);
+  quiz.totalSecondsUsed += config.timePerQ === 0 ? Math.round((Date.now() - quiz.startedAt) / 1000) : timeTaken;
+
+  const item = BANK[quiz.order[quiz.idx]];
+  const isCorrect = oi === item.a;
+  quiz.answers.push({ qi: quiz.order[quiz.idx], chosen: oi, correct: isCorrect, timedOut: false });
+
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((o, displayIdx) => {
+    o.classList.add('disabled');
+    const origIdx = quiz.currentShuffle[displayIdx];
+    if (origIdx === item.a) o.classList.add('correct');
+    else if (origIdx === oi) o.classList.add('wrong');
+  });
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.disabled = false;
+  nextBtn.textContent = quiz.idx === quiz.order.length - 1 ? 'See results' : 'Next question';
+  nextBtn.onclick = goNext;
+}
+
+function goNext(){
+  if (quiz.idx < quiz.order.length - 1){
+    quiz.idx++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+/* ===================== RESULTS ===================== */
+function showResults(){
+  clearInterval(quiz.timer);
+  document.getElementById('quiz-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.remove('hidden');
+
+  const total = quiz.answers.length;
+  const correct = quiz.answers.filter(a => a.correct).length;
+  const wrong = total - correct;
+  const pct = Math.round((correct / total) * 100);
+  const passed = pct >= 50;
+
+  const scoreBig = document.getElementById('score-big');
+  scoreBig.textContent = pct + '%';
+  scoreBig.className = 'score-big ' + (passed ? 'pass' : 'fail');
+
+  document.getElementById('score-sub').textContent = `${correct} / ${total} correct`;
+  const verdict = document.getElementById('verdict');
+  verdict.textContent = passed ? 'Pass · you\'re ready' : 'Below 50% · needs another pass';
+  verdict.className = 'verdict ' + (passed ? 'pass' : 'fail');
+
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-time').textContent = formatTime(quiz.totalSecondsUsed);
+
+  // build review list (hidden by default)
+  const reviewEl = document.getElementById('review-list');
+  reviewEl.innerHTML = '<div class="section-label">Answer Review</div>';
+  const letters = ['A', 'B', 'C', 'D'];
+  quiz.answers.forEach(ans => {
+    const item = BANK[ans.qi];
+    const row = document.createElement('div');
+    row.className = 'review-item';
+    const yourAnsText = ans.timedOut ? 'Not answered' : `${letters[ans.chosen]}. ${item.o[ans.chosen]}`;
+    row.innerHTML = `
+      <div class="review-q">${ans.correct ? '✓' : '✕'} ${item.q}</div>
+      <div class="review-ans">
+        <div class="${ans.correct ? 'correct-line' : 'yours'}">Your answer: ${yourAnsText}</div>
+        ${!ans.correct ? `<div class="correct-line">Correct: ${letters[item.a]}. ${item.o[item.a]}</div>` : ''}
+      </div>
+      <div class="review-why">${item.exp}</div>`;
+    reviewEl.appendChild(row);
+  });
+}
+
+document.getElementById('retry-btn').addEventListener('click', () => {
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('review-list').classList.add('hidden');
+  document.getElementById('review-toggle').textContent = 'Show answer review';
+  document.getElementById('setup-screen').classList.remove('hidden');
+});
+
+document.getElementById('review-toggle').addEventListener('click', () => {
+  const rl = document.getElementById('review-list');
+  const showing = !rl.classList.contains('hidden');
+  rl.classList.toggle('hidden');
+  document.getElementById('review-toggle').textContent = showing ? 'Show answer review' : 'Hide answer review';
+});
+
+/* ===== REAL CBT MODE: free navigation, answers shown only after submit ===== */
+function startQuiz(){
+  quiz.order = shuffle([...BANK.keys()]).slice(0, config.count);
+  quiz.idx = 0;
+  quiz.sel = quiz.order.map(() => null);
+  quiz.perm = quiz.order.map(() => shuffle([0,1,2,3]));
+  quiz.startedAt = Date.now();
+  quiz.totalSecondsUsed = 0;
+  document.getElementById('setup-screen').classList.add('hidden');
+  document.getElementById('result-screen').classList.add('hidden');
+  document.getElementById('quiz-screen').classList.remove('hidden');
+  cbtBuild(); renderQuestion(); cbtTimer();
+  window.scrollTo(0,0);
+}
+function cbtBuild(){
+  if (!document.getElementById('cbt-css')){
+    const st=document.createElement('style');st.id='cbt-css';
+    st.textContent='.pal{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.pal button{width:36px;height:36px;border-radius:8px;border:1px solid rgba(241,228,200,.3);background:transparent;color:inherit;font-size:13px;cursor:pointer}.pal button.ans{background:#C9963E;color:#1B140F;border-color:#C9963E}.pal button.cur{outline:2px solid #fff;outline-offset:1px}.pal-l{font-size:12px;opacity:.7;margin-top:20px}#prev-btn{flex:1}#next-btn{flex:1}';
+    document.head.appendChild(st);
+  }
+  if (!document.getElementById('prev-btn')){
+    const p=document.createElement('button');p.id='prev-btn';p.className='cta secondary';p.textContent='← Previous';
+    const nb=document.getElementById('next-btn');nb.parentNode.insertBefore(p,nb);
+    const l=document.createElement('div');l.className='pal-l';l.textContent='Question list — tap a number to jump (green = answered)';
+    const pal=document.createElement('div');pal.className='pal';pal.id='palette';
+    const row=nb.parentNode;row.parentNode.insertBefore(l,row);row.parentNode.insertBefore(pal,row);
+  }
+}
+function renderQuestion(){
+  const qi=quiz.order[quiz.idx], item=BANK[qi], n=quiz.order.length;
+  document.getElementById('q-count').textContent=`Question ${quiz.idx+1} / ${n}`;
+  document.getElementById('topic-tag').textContent=item.t;
+  document.getElementById('question-text').textContent=item.q;
+  const pct=(quiz.idx/Math.max(1,n-1))*100;
+  const rf=document.getElementById('route-fill'); if(rf) rf.style.width=pct+'%';
+  const cm=document.getElementById('camel'); if(cm) cm.style.left=pct+'%';
+  const si=Math.min(3,Math.floor((quiz.idx/n)*4));
+  for(let s=0;s<4;s++){const e=document.getElementById('stage'+s); if(e) e.classList.toggle('done',s<=si);}
+  const wrap=document.getElementById('options'); wrap.innerHTML='';
+  const L=['A','B','C','D'];
+  quiz.perm[quiz.idx].forEach((orig,d)=>{
+    const div=document.createElement('div');div.className='option'+(quiz.sel[quiz.idx]===orig?' selected':'');
+    div.innerHTML=`<span class="letter">${L[d]}</span><span>${item.o[orig]}</span>`;
+    div.onclick=()=>{quiz.sel[quiz.idx]=orig;renderQuestion();};
+    wrap.appendChild(div);
+  });
+  const pv=document.getElementById('prev-btn'),nb=document.getElementById('next-btn');
+  pv.disabled=quiz.idx===0; pv.onclick=()=>{quiz.idx--;renderQuestion();window.scrollTo(0,0)};
+  nb.disabled=false;
+  const last=quiz.idx===n-1;
+  nb.textContent=last?'Submit exam':'Next →';
+  nb.onclick=()=>{ if(last) submitExam(false); else {quiz.idx++;renderQuestion();window.scrollTo(0,0)} };
+  const pal=document.getElementById('palette'); pal.innerHTML='';
+  quiz.order.forEach((_,i)=>{const b=document.createElement('button');b.textContent=i+1;
+    b.className=(quiz.sel[i]!==null?'ans ':'')+(i===quiz.idx?'cur':'');
+    b.onclick=()=>{quiz.idx=i;renderQuestion();window.scrollTo(0,0)};pal.appendChild(b);});
+}
+function cbtTimer(){
+  clearInterval(quiz.timer);
+  const el=document.getElementById('timer'); el.classList.remove('low');
+  if(config.timePerQ===0){el.textContent='∞';return;}
+  quiz.secondsLeft=config.timePerQ*quiz.order.length;
+  el.textContent=formatTime(quiz.secondsLeft);
+  quiz.timer=setInterval(()=>{
+    quiz.secondsLeft--; el.textContent=formatTime(Math.max(0,quiz.secondsLeft));
+    if(quiz.secondsLeft<=60) el.classList.add('low');
+    if(quiz.secondsLeft<=0){clearInterval(quiz.timer);alert('Time is up! Your exam is being submitted.');submitExam(true);}
+  },1000);
+}
+function submitExam(force){
+  if(!force){
+    const un=quiz.sel.filter(x=>x===null).length;
+    if(!confirm(un?`You have ${un} unanswered question(s). Submit anyway?`:'Submit your exam now?')) return;
+  }
+  clearInterval(quiz.timer);
+  quiz.totalSecondsUsed=Math.round((Date.now()-quiz.startedAt)/1000);
+  quiz.answers=quiz.order.map((qi,i)=>{const ch=quiz.sel[i];return {qi,chosen:ch,correct:ch===BANK[qi].a,timedOut:ch===null};});
+  showResults();
+  document.getElementById('review-list').classList.remove('hidden');
+  document.getElementById('review-toggle').textContent='Hide answer review';
+  window.scrollTo(0,0);
+}
+</script>
+
+<script>
+(function(){
+var C={"sel": "#start-btn", "cnt": "config.count", "tm": "config.timePerQ", "bank": "BANK.length", "name": "ECO 112 \u00b7 Practice CBT", "title": "Economics of Deforestation", "accent": "#1f8a4c", "intro": "This practice CBT covers Weeks 1 to 7 of the Economics of Deforestation reading materials. Questions are mixed and exam-style, including tricky wording and numbers.", "topics": ["Forests, types and importance", "Causes of deforestation", "Theoretical frameworks (EKC, Tragedy of the Commons, externalities, open access)", "Land use economics and cost-benefit analysis", "Valuation of forest resources", "Economic and ecological impacts"]};
+function box(inner){var ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(10,14,12,.94);overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:18px;font-family:Inter,system-ui,sans-serif';
+ ov.innerHTML='<div style="max-width:560px;width:100%;margin:auto;background:#fff;color:#16211b;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)">'+inner+'</div>';document.body.appendChild(ov);return ov;}
+function stat(n,l){return '<div style="flex:1;min-width:90px;background:#f2f5f3;border-radius:10px;padding:10px;text-align:center"><div style="font-size:21px;font-weight:700">'+n+'</div><div style="font-size:11px;color:#55645b">'+l+'</div></div>';}
+function btn(id,t,bg,fg,fl){return '<button id="'+id+'" style="flex:'+fl+';padding:14px;border-radius:10px;border:'+(bg=='#fff'?'1px solid #bbb':'0')+';background:'+bg+';color:'+fg+';font-weight:700;font-size:15px;cursor:pointer">'+t+'</button>';}
+/* WELCOME */
+var size=(function(){try{return eval(C.bank)}catch(e){return ''}})();
+var w=box('<div style="background:'+C.accent+';color:#fff;padding:22px 22px 18px"><div style="font:600 11px monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.85">'+C.name+'</div><h2 style="margin:8px 0 4px;font-size:26px">Welcome 👋</h2><div style="font-size:16px;opacity:.95">'+C.title+'</div></div>'
+ +'<div style="padding:20px 22px 22px"><p style="margin:0 0 14px;font-size:15px;line-height:1.55">'+C.intro+'</p>'
+ +'<div style="font-weight:700;font-size:13px;margin-bottom:6px">What you will practise</div><ul style="margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.55">'+C.topics.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'
+ +'<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">'+stat(size,'Questions in bank')+stat('50%','Pass mark')+stat('CBT','Exam style')+'</div>'
+ +'<p style="margin:0 0 14px;font-size:13px;color:#55645b">Next: choose how many questions you want to answer and your time.</p>'
+ +'<div style="display:flex">'+btn('wl-go','Get started →',C.accent,'#fff',1)+'</div></div>');
+document.getElementById('wl-go').onclick=function(){w.remove()};
+/* WARNING */
+function info(){return {n:(eval(C.cnt)),t:(eval(C.tm))};}
+function warn(b){
+  var i=info(),tot=i.t>0?Math.ceil(i.n*i.t/60):0;
+  var items=[i.t>0?('The timer runs for <b>'+tot+' minutes</b> for the whole exam. It <b>cannot be paused</b>, and your exam is <b>submitted automatically</b> when time is up.'):'There is no time limit on this run.',
+   'Do <b>not</b> refresh, close or leave this page. Your progress will be <b>lost</b>.',
+   'Answers and explanations are <b>hidden</b> until you submit, exactly like a real CBT.',
+   'You can change an answer and move with <b>Previous</b> / <b>Next</b> (or the question numbers) any time before submitting.',
+   'Unanswered questions score <b>zero</b>. Once you tap <b>Submit exam</b>, you cannot go back.',
+   'Work on your own, the way you will in the real exam. Pass mark is <b>50%</b>.'];
+  var ov=box('<div style="background:#b3261e;color:#fff;padding:18px 22px"><div style="font-size:30px;line-height:1">⚠️</div><h2 style="margin:6px 0 2px;font-size:23px">Warning: read before you begin</h2><div style="font-size:13px;opacity:.9">'+C.name+'</div></div>'
+   +'<div style="padding:18px 22px 22px"><div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">'+stat(i.n,'Questions')+stat(i.t>0?tot+' min':'None','Total time')+stat('50%','Pass mark')+'</div>'
+   +'<ol style="margin:0 0 14px;padding-left:20px;font-size:14.5px;line-height:1.55">'+items.map(function(x){return '<li style="margin-bottom:6px">'+x+'</li>'}).join('')+'</ol>'
+   +'<label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;margin-bottom:14px;cursor:pointer"><input type="checkbox" id="wn-ck" style="margin-top:3px;width:18px;height:18px"><span style="color:#16211b">I have read and understood the warning.</span></label>'
+   +'<div style="display:flex;gap:10px">'+btn('wn-back','← Back','#fff','#16211b',1)+btn('wn-go','Start exam →','#b3261e','#fff',2)+'</div></div>');
+  var go=document.getElementById('wn-go');go.disabled=true;go.style.opacity=.45;
+  document.getElementById('wn-ck').onchange=function(e){go.disabled=!e.target.checked;go.style.opacity=e.target.checked?1:.45};
+  document.getElementById('wn-back').onclick=function(){ov.remove()};
+  go.onclick=function(){if(go.disabled)return;ov.remove();window.__ok=true;b.click();window.__ok=false;};
+}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest(C.sel);if(!b||window.__ok||b.disabled)return;e.preventDefault();e.stopImmediatePropagation();warn(b);},true);
+})();
+</script>
+</body>
+</html>
